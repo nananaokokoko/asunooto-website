@@ -25,18 +25,18 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
       <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden bg-gradient-to-b from-white to-blue-50">
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
           <div className="mb-8">
-            <h1 className="text-6xl md:text-8xl font-bold mb-4">
-              <span className="bg-gradient-to-r from-blue-400 via-pink-400 to-yellow-400 text-transparent bg-clip-text">
-                アスノオト
-              </span>
-            </h1>
-            <p className="text-2xl md:text-3xl text-blue-500 tracking-wider">ASUNOOTO</p>
+            {/* アスノオトロゴ */}
+            <img 
+              src="/asunooto-logo.png" 
+              alt="アスノオト" 
+              className="mx-auto h-24 md:h-32 mb-4"
+            />
           </div>
         </div>
       </section>
 
       {/* アスノオトとは */}
-      <section className="py-20 bg-white">
+      <section id="about" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
             <span className="bg-gradient-to-r from-blue-400 via-pink-400 to-yellow-400 text-transparent bg-clip-text">
@@ -73,7 +73,7 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
       </section>
 
       {/* 事業内容 */}
-      <section className="py-20 bg-gray-50">
+      <section id="project" className="py-20 bg-gray-50">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
             PROJECT
@@ -81,7 +81,14 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
           <p className="text-center text-blue-500 text-lg mb-12">事業内容</p>
           
           <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm">
-            <h3 className="text-2xl font-bold text-gray-900 mb-6">さとのば大学</h3>
+            <div className="flex items-center mb-6">
+              <img 
+                src="/satonova-logo.png" 
+                alt="さとのば大学" 
+                className="h-16 mr-4"
+              />
+              <h3 className="text-2xl font-bold text-gray-900">さとのば大学</h3>
+            </div>
             <p className="text-gray-700 leading-loose">
               日本全国４つの地域に１年ずつ暮らしながら、自分で立てたテーマに現地の人々と共に取り組む「プロジェクト学習」と、
               地域共創領域のトップランナーである講師陣や在校生と学び合う「オンライン学習」を行き来しながら学ぶ、
@@ -90,6 +97,11 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
             <p className="text-gray-700 leading-loose mt-4">
               「自分らしく社会と関わり、仲間と共にほしい未来を自分たちの手で創る」ことができる
               "未来共創人材"の育成を目指します。
+            </p>
+            <p className="mt-6">
+              <a href="https://satonova.org/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 transition-colors">
+                さとのば大学の詳細はこちら →
+              </a>
             </p>
           </div>
 
@@ -121,7 +133,7 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
                 <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
                   <span className="text-gray-600">ロゴ</span>
                 </div>
-                <p className="font-medium">TIPSナンバリター</p>
+                <p className="font-medium">TIPSアンバサダー</p>
               </div>
               <div className="text-center">
                 <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
@@ -141,7 +153,7 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
       </section>
 
       {/* 代表メッセージ */}
-      <section className="py-20 bg-white">
+      <section id="message" className="py-20 bg-white">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
             MESSAGE
@@ -169,7 +181,7 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
       </section>
 
       {/* ご支援いただける方へ */}
-      <section className="py-20 bg-gray-50">
+      <section id="support" className="py-20 bg-gray-50">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
             SUPPORT
@@ -263,14 +275,14 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
       </section>
 
       {/* 会社概要 */}
-      <section className="py-20 bg-gray-50">
+      <section id="company" className="py-20 bg-gradient-to-b from-teal-400 to-teal-500">
         <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
           <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            COMPANY
+            会社概要
           </h2>
-          <p className="text-center text-purple-500 text-lg mb-12">会社概要</p>
+          <p className="text-center text-white text-lg mb-12">COMPANY</p>
           
-          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm">
+          <div className="bg-white/95 rounded-2xl p-8 md:p-12 shadow-lg">
             <dl className="space-y-4">
               <div className="flex flex-col sm:flex-row">
                 <dt className="font-bold text-gray-900 sm:w-32">会社名</dt>
@@ -291,6 +303,14 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
               <div className="flex flex-col sm:flex-row">
                 <dt className="font-bold text-gray-900 sm:w-32">所在地</dt>
                 <dd className="text-gray-700 sm:ml-8">〒101-0054 東京都千代田区神田錦町3‐21 (郵便BOX番号 1345)</dd>
+              </div>
+              <div className="flex flex-col sm:flex-row">
+                <dt className="font-bold text-gray-900 sm:w-32">事業内容</dt>
+                <dd className="text-gray-700 sm:ml-8">
+                  人材育成・教育事業<br />
+                  ICTを含めたコミュニケーション・コンサルティング<br />
+                  都市と地方、経営者と従業員、生産者と消費者といった対立関係を協働関係に変える相互理解支援
+                </dd>
               </div>
             </dl>
           </div>
