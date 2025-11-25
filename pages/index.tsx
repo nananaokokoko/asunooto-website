@@ -16,82 +16,194 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
   return (
     <Layout>
       <Head>
-        <title>株式会社アスノオト - 明日の音を、今日つくる。</title>
-        <meta name="description" content="株式会社アスノオトは、都市と農村の新しい関係を創り、持続可能な未来を目指します。" />
+        <title>株式会社アスノオト - ASUNOOTO</title>
+        <meta name="description" content="未来に希望を持ち、ほしい未来のために自ら共創できる人々であふれる社会を目指します。" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* ヒーローセクション */}
-      <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
-        <div className="absolute inset-0 opacity-5">
-          <div className="absolute inset-0 bg-gradient-to-br from-asunooto-blue/5 to-transparent"></div>
-          <div className="absolute inset-0" style={{ 
-            backgroundImage: `url("data:image/svg+xml,%3Csvg width='60' height='60' viewBox='0 0 60 60' xmlns='http://www.w3.org/2000/svg'%3E%3Cg fill='none' fill-rule='evenodd'%3E%3Cg fill='%230066cc' fill-opacity='0.3'%3E%3Cpath d='M36 34v-4h-2v4h-4v2h4v4h2v-4h4v-2h-4zm0-30V0h-2v4h-4v2h4v4h2V6h4V4h-4zM6 34v-4H4v4H0v2h4v4h2v-4h4v-2H6zM6 4V0H4v4H0v2h4v4h2V6h4V4H6z'/%3E%3C/g%3E%3C/g%3E%3C/svg%3E")`,
-            backgroundSize: '60px 60px'
-          }}></div>
-        </div>
+      <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden bg-gradient-to-b from-white to-blue-50">
         <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
-          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 tracking-tight">
-            明日の音を、<br />
-            <span className="text-asunooto-blue">今日つくる。</span>
-          </h1>
-          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
-            株式会社アスノオトは、都市と農村の新しい関係を創り、<br className="hidden md:block" />
-            持続可能な未来を目指します。
-          </p>
+          <div className="mb-8">
+            <h1 className="text-6xl md:text-8xl font-bold mb-4">
+              <span className="bg-gradient-to-r from-blue-400 via-pink-400 to-yellow-400 text-transparent bg-clip-text">
+                アスノオト
+              </span>
+            </h1>
+            <p className="text-2xl md:text-3xl text-blue-500 tracking-wider">ASUNOOTO</p>
+          </div>
         </div>
       </section>
 
-      {/* 私たちについて */}
-      <section id="about" className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-            私たちについて
+      {/* アスノオトとは */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
+            <span className="bg-gradient-to-r from-blue-400 via-pink-400 to-yellow-400 text-transparent bg-clip-text">
+              アスノオト
+            </span>
+            <span className="text-gray-900 ml-2">とは？</span>
           </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-gradient-to-br from-asunooto-light/10 to-transparent rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-asunooto-blue rounded-lg flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                </svg>
-              </div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900">さとのば大学の運営</h3>
-              <p className="text-gray-600 leading-relaxed">
-                「さとのば大学」の運営を通じて、地域を旅しながら学ぶ新しい教育の形を提供しています。
+          
+          <div className="bg-gray-50 rounded-2xl p-8 md:p-12">
+            <p className="text-center text-gray-700 leading-relaxed mb-8">
+              アスノオトには
+            </p>
+            <div className="space-y-4 mb-8">
+              <p className="text-center">
+                <span className="text-blue-500 font-bold">「明日」</span>の
+                <span className="text-yellow-500 font-bold">「音」</span> ▷ 
+                未来に向けた<span className="text-pink-500 font-bold">協和音</span>
+              </p>
+              <p className="text-center">
+                <span className="text-pink-500 font-bold">「us」</span>
+                <span className="text-blue-500 font-bold">「note」</span> ▷ 
+                <span className="text-yellow-500">"私たち"</span>として書きつづる
               </p>
             </div>
-            <div className="bg-gradient-to-br from-asunooto-light/10 to-transparent rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-asunooto-blue rounded-lg flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                </svg>
+            <p className="text-center text-gray-700 leading-relaxed">
+              という、2つの想いを込めています。
+            </p>
+            <p className="text-center text-gray-700 leading-relaxed mt-6">
+              未来に希望を持ち、ほしい未来のために<br />
+              自ら共創できる人々であふれる社会を目指します。
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* 事業内容 */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+            PROJECT
+          </h2>
+          <p className="text-center text-blue-500 text-lg mb-12">事業内容</p>
+          
+          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm">
+            <h3 className="text-2xl font-bold text-gray-900 mb-6">さとのば大学</h3>
+            <p className="text-gray-700 leading-loose">
+              日本全国４つの地域に１年ずつ暮らしながら、自分で立てたテーマに現地の人々と共に取り組む「プロジェクト学習」と、
+              地域共創領域のトップランナーである講師陣や在校生と学び合う「オンライン学習」を行き来しながら学ぶ、
+              新しいスタイルの市民大学です。
+            </p>
+            <p className="text-gray-700 leading-loose mt-4">
+              「自分らしく社会と関わり、仲間と共にほしい未来を自分たちの手で創る」ことができる
+              "未来共創人材"の育成を目指します。
+            </p>
+          </div>
+
+          {/* 過去の事業 */}
+          <div className="mt-12">
+            <h3 className="text-xl font-bold text-center text-blue-500 mb-8">過去の事業</h3>
+            <div className="grid md:grid-cols-3 gap-6">
+              <div className="text-center">
+                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-600">ロゴ</span>
+                </div>
+                <p className="font-medium">しごとバー神田・運営</p>
               </div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900">地域をつなぐ</h3>
-              <p className="text-gray-600 leading-relaxed">
-                都市と農村、人と地域、今と未来をつなぐ架け橋として、新しい価値を創造します。
-              </p>
+              <div className="text-center">
+                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-600">ロゴ</span>
+                </div>
+                <p className="font-medium">地域共創カレッジ運営</p>
+              </div>
+              <div className="text-center">
+                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-600">ロゴ</span>
+                </div>
+                <p className="font-medium">錦町ブンカイサン<br />アンバサダー</p>
+              </div>
             </div>
-            <div className="bg-gradient-to-br from-asunooto-light/10 to-transparent rounded-2xl p-8 hover:shadow-lg transition-shadow">
-              <div className="w-16 h-16 bg-asunooto-blue rounded-lg flex items-center justify-center mb-6">
-                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
-                </svg>
+            <div className="grid md:grid-cols-3 gap-6 mt-6">
+              <div className="text-center">
+                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-600">ロゴ</span>
+                </div>
+                <p className="font-medium">TIPSナンバリター</p>
               </div>
-              <h3 className="text-xl font-bold mb-4 text-gray-900">未来を創る</h3>
-              <p className="text-gray-600 leading-relaxed">
-                一人ひとりが自分らしく生きられる社会を目指し、持続可能な未来を創造していきます。
-              </p>
+              <div className="text-center">
+                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-600">ロゴ</span>
+                </div>
+                <p className="font-medium">ないものはないラボ参画</p>
+              </div>
+              <div className="text-center">
+                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
+                  <span className="text-gray-600">ロゴ</span>
+                </div>
+                <p className="font-medium">島の大使館運営</p>
+              </div>
             </div>
           </div>
         </div>
       </section>
 
-      {/* メンバー */}
-      <section id="members" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-            メンバー
+      {/* 代表メッセージ */}
+      <section className="py-20 bg-white">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+            MESSAGE
           </h2>
+          <p className="text-center text-pink-500 text-lg mb-12">代表メッセージ</p>
+          
+          <div className="bg-gradient-to-br from-blue-50 to-pink-50 rounded-2xl p-8 md:p-12">
+            <p className="text-gray-700 leading-loose mb-4">
+              一人では未来に希望を見出すことが難しいと思ったとき、諦めるでも孤軍奮闘するでもなく、
+              一緒に未来を作ろうとしてくれる仲間がいることが、僕自身にとって一番の希望になっています。
+            </p>
+            <p className="text-gray-700 leading-loose mb-4">
+              そんな「共創仲間」がいることが当たり前の社会になることを願いながら、
+              人と人が未来に向けて出会える場づくりを一つ一つ形にしていきたいと思っています。
+            </p>
+            <p className="text-gray-700 leading-loose mb-4">
+              各事業も、非営利型株式会社としての運営も、未来共創のための仲間集めの仕組みと考えておりますので、
+              これからも"目指す未来"に共感いただける方と、色々な関わりを創造していきたいと思います。
+            </p>
+            <p className="text-right text-gray-900 font-bold mt-6">
+              代表取締役 信岡良亮
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* ご支援いただける方へ */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+            SUPPORT
+          </h2>
+          <p className="text-center text-pink-500 text-lg mb-12">ご支援いただける方へ</p>
+          
+          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm">
+            <p className="text-gray-700 leading-loose mb-4">
+              私たちは、理念に共感してくださる皆さまと共に会社を育てるために「非営利型株式会社」として運営をしています。
+            </p>
+            <p className="mb-4">
+              <a href="https://greenz.jp/2024/11/19/satonova_2024/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 transition-colors">
+                非営利型株式会社について(紹介記事) →
+              </a>
+            </p>
+            <p className="text-gray-700 leading-loose mb-4">
+              株主の方は「オーナー」として、主にさとのば大学の様々な取り組みにご参加いただけます。
+            </p>
+            <p>
+              <a href="https://satonova.org/owners" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 transition-colors">
+                詳しくはこちら →
+              </a>
+            </p>
+          </div>
+        </div>
+      </section>
+
+      {/* メンバー */}
+      <section id="members" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+            MEMBERS
+          </h2>
+          <p className="text-center text-orange-500 text-lg mb-12">メンバー紹介</p>
           <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
             {members.map((member) => (
               <MemberCard key={member.id} member={member} />
@@ -100,22 +212,38 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
         </div>
       </section>
 
+      {/* お知らせ */}
+      <section id="news" className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+            NEWS
+          </h2>
+          <p className="text-center text-blue-500 text-lg mb-12">お知らせ</p>
+          <div className="max-w-3xl mx-auto space-y-6">
+            {news.map((item) => (
+              <NewsItem key={item.id} news={item} />
+            ))}
+          </div>
+        </div>
+      </section>
+
       {/* 沿革 */}
       <section id="history" className="py-20 bg-white">
         <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-            沿革
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+            HISTORY
           </h2>
+          <p className="text-center text-purple-500 text-lg mb-12">沿革</p>
           <div className="max-w-3xl mx-auto">
             <div className="relative">
               <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-300"></div>
               <div className="space-y-8">
                 {history.map((item) => (
                   <div key={item.id} className="relative flex items-start">
-                    <div className="absolute left-8 w-4 h-4 bg-asunooto-blue rounded-full -translate-x-1/2 ring-4 ring-white"></div>
+                    <div className="absolute left-8 w-4 h-4 bg-gradient-to-br from-blue-400 to-pink-400 rounded-full -translate-x-1/2 ring-4 ring-white"></div>
                     <div className="ml-16 bg-white rounded-lg p-6 shadow-sm border border-gray-100">
                       <div className="flex items-center mb-2">
-                        <span className="text-asunooto-blue font-bold text-lg">
+                        <span className="text-blue-500 font-bold text-lg">
                           {item.year}年
                         </span>
                         {item.month && (
@@ -134,16 +262,37 @@ const Home: React.FC<HomeProps> = ({ members, news, history }) => {
         </div>
       </section>
 
-      {/* お知らせ */}
-      <section id="news" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
-            お知らせ
+      {/* 会社概要 */}
+      <section className="py-20 bg-gray-50">
+        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
+            COMPANY
           </h2>
-          <div className="max-w-3xl mx-auto space-y-6">
-            {news.map((item) => (
-              <NewsItem key={item.id} news={item} />
-            ))}
+          <p className="text-center text-purple-500 text-lg mb-12">会社概要</p>
+          
+          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm">
+            <dl className="space-y-4">
+              <div className="flex flex-col sm:flex-row">
+                <dt className="font-bold text-gray-900 sm:w-32">会社名</dt>
+                <dd className="text-gray-700 sm:ml-8">株式会社アスノオト（英文社名：asunooto.co.,ltd.）</dd>
+              </div>
+              <div className="flex flex-col sm:flex-row">
+                <dt className="font-bold text-gray-900 sm:w-32">設立</dt>
+                <dd className="text-gray-700 sm:ml-8">2015年5月22日</dd>
+              </div>
+              <div className="flex flex-col sm:flex-row">
+                <dt className="font-bold text-gray-900 sm:w-32">資本金</dt>
+                <dd className="text-gray-700 sm:ml-8">28,700,000円</dd>
+              </div>
+              <div className="flex flex-col sm:flex-row">
+                <dt className="font-bold text-gray-900 sm:w-32">代表者</dt>
+                <dd className="text-gray-700 sm:ml-8">代表取締役 信岡 良亮</dd>
+              </div>
+              <div className="flex flex-col sm:flex-row">
+                <dt className="font-bold text-gray-900 sm:w-32">所在地</dt>
+                <dd className="text-gray-700 sm:ml-8">〒101-0054 東京都千代田区神田錦町3‐21 (郵便BOX番号 1345)</dd>
+              </div>
+            </dl>
           </div>
         </div>
       </section>

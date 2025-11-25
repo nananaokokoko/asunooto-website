@@ -18,6 +18,7 @@ export interface Member {
   role: string
   description: string
   order: number
+  imageUrl?: string | null  // 画像URL追加
 }
 
 // ニュース情報の型定義
@@ -55,7 +56,18 @@ function getPropertyValue(property: any, type: string): any {
     case 'date':
       return property.date?.start || ''
     case 'url':
-      return property.url || null  // undefinedではなくnullを返す
+      return property.url || null
+    case 'files':
+      // ファイル&メディアプロパティから画像URLを取得
+      if (property.files && property.files.length > 0) {
+        const file = property.files[0]
+        if (file.type === 'file') {
+          return file.file.url
+        } else if (file.type === 'external') {
+          return file.external.url
+        }
+      }
+      return null
     default:
       return null
   }
@@ -86,6 +98,7 @@ export async function getMembers(): Promise<Member[]> {
       role: getPropertyValue(page.properties['役職'], 'select'),
       description: getPropertyValue(page.properties['説明'], 'rich_text'),
       order: getPropertyValue(page.properties['順序'], 'number'),
+      imageUrl: getPropertyValue(page.properties['顔写真'], 'files'),  // 画像プロパティを追加
     }))
   } catch (error) {
     console.error('Error fetching members:', error)
@@ -166,6 +179,7 @@ function getDummyMembers(): Member[] {
       role: '経営',
       description: '「さとのば大学」の創設者。地域と都市をつなぐ新しい教育の形を追求しています。',
       order: 1,
+      imageUrl: null,
     },
     {
       id: '2',
@@ -174,6 +188,7 @@ function getDummyMembers(): Member[] {
       role: '企画',
       description: '地域プロジェクトの企画・運営を担当。学生たちの成長を支えています。',
       order: 2,
+      imageUrl: null,
     },
     {
       id: '3',
@@ -182,6 +197,7 @@ function getDummyMembers(): Member[] {
       role: '運営',
       description: '地域との関係構築を担当。持続可能なコミュニティづくりに取り組んでいます。',
       order: 3,
+      imageUrl: null,
     },
   ]
 }
