@@ -12,18 +12,17 @@ interface HomeProps {
   history: History[]
 }
 
-export default function Home({ members, news, history }: HomeProps) {
+const Home: React.FC<HomeProps> = ({ members, news, history }) => {
   return (
     <Layout>
       <Head>
-        <title>株式会社アスノオト - Asunooto Inc.</title>
-        <meta name="description" content="株式会社アスノオトは、都市と農村の新しい関係を創り、持続可能な未来を目指します。さとのば大学の運営を通じて、地域を旅する学びを提供しています。" />
-        <meta name="viewport" content="width=device-width, initial-scale=1" />
+        <title>株式会社アスノオト - 明日の音を、今日つくる。</title>
+        <meta name="description" content="株式会社アスノオトは、都市と農村の新しい関係を創り、持続可能な未来を目指します。" />
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
       {/* ヒーローセクション */}
-      <section className="relative bg-gradient-to-br from-asunooto-light via-white to-blue-50 overflow-hidden">
+      <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden">
         <div className="absolute inset-0 opacity-5">
           <div className="absolute inset-0 bg-gradient-to-br from-asunooto-blue/5 to-transparent"></div>
           <div className="absolute inset-0" style={{ 
@@ -31,118 +30,102 @@ export default function Home({ members, news, history }: HomeProps) {
             backgroundSize: '60px 60px'
           }}></div>
         </div>
-        
-        <div className="container mx-auto px-4 md:px-6 py-20 md:py-32 relative z-10">
-          <div className="max-w-3xl">
-            <h1 className="font-display text-4xl md:text-6xl font-bold text-asunooto-dark mb-6 animate-fade-in">
-              じぶんのミライを<br />
-              書きつづる
-            </h1>
-            <p className="text-lg md:text-xl text-gray-700 leading-relaxed mb-8 animate-slide-up animate-delay-200">
-              アスノオトとは、未来に向けた協和音を<br className="hidden md:block" />
-              「明日」の「音」であらわします。<br />
-              ほしい未来に向けて恊働し、<br className="hidden md:block" />
-              自分たちの未来を自分たちで書きつづることを目指します。
-            </p>
-            <div className="flex flex-col sm:flex-row gap-4 animate-slide-up animate-delay-300">
-              <a 
-                href="#about"
-                className="button-primary inline-block text-center"
-              >
-                会社について
-              </a>
-              <a 
-                href="https://satonoba.org"
-                target="_blank"
-                className="bg-white text-asunooto-blue px-6 py-3 rounded-lg hover:bg-gray-50 transition-colors duration-200 font-medium border-2 border-asunooto-blue text-center"
-              >
-                さとのば大学を見る
-              </a>
+        <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
+          <h1 className="text-5xl md:text-7xl font-bold text-gray-900 mb-6 tracking-tight">
+            明日の音を、<br />
+            <span className="text-asunooto-blue">今日つくる。</span>
+          </h1>
+          <p className="text-xl md:text-2xl text-gray-600 max-w-3xl mx-auto leading-relaxed">
+            株式会社アスノオトは、都市と農村の新しい関係を創り、<br className="hidden md:block" />
+            持続可能な未来を目指します。
+          </p>
+        </div>
+      </section>
+
+      {/* 私たちについて */}
+      <section id="about" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            私たちについて
+          </h2>
+          <div className="grid md:grid-cols-3 gap-8">
+            <div className="bg-gradient-to-br from-asunooto-light/10 to-transparent rounded-2xl p-8 hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-asunooto-blue rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900">さとのば大学の運営</h3>
+              <p className="text-gray-600 leading-relaxed">
+                「さとのば大学」の運営を通じて、地域を旅しながら学ぶ新しい教育の形を提供しています。
+              </p>
+            </div>
+            <div className="bg-gradient-to-br from-asunooto-light/10 to-transparent rounded-2xl p-8 hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-asunooto-blue rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900">地域をつなぐ</h3>
+              <p className="text-gray-600 leading-relaxed">
+                都市と農村、人と地域、今と未来をつなぐ架け橋として、新しい価値を創造します。
+              </p>
+            </div>
+            <div className="bg-gradient-to-br from-asunooto-light/10 to-transparent rounded-2xl p-8 hover:shadow-lg transition-shadow">
+              <div className="w-16 h-16 bg-asunooto-blue rounded-lg flex items-center justify-center mb-6">
+                <svg className="w-8 h-8 text-white" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                  <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z" />
+                </svg>
+              </div>
+              <h3 className="text-xl font-bold mb-4 text-gray-900">未来を創る</h3>
+              <p className="text-gray-600 leading-relaxed">
+                一人ひとりが自分らしく生きられる社会を目指し、持続可能な未来を創造していきます。
+              </p>
             </div>
           </div>
         </div>
       </section>
 
-      {/* 会社概要セクション */}
-      <section id="about" className="py-16 md:py-24 bg-white">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-3xl mx-auto text-center">
-            <p className="section-subtitle animate-fade-in">ABOUT</p>
-            <h2 className="section-title animate-fade-in animate-delay-100">会社概要</h2>
-            <div className="mt-12 text-left space-y-6 text-gray-700 leading-relaxed">
-              <p className="animate-slide-up animate-delay-200">
-                島根県海士町での活動で知られる株式会社風と土と（旧：株式会社巡の環）の共同創業者である信岡良亮が、地域と都市の新しい関係作りのために2015年に創業。
-              </p>
-              <p className="animate-slide-up animate-delay-300">
-                都市と地方、経営者と従業員、生産者と消費者といった対立関係を協働関係に変える相互理解支援を、企業研修を通じて行ってきました。現在は地域を巡り仲間と共に学び合う「さとのば大学」を主催、運営しています。
-              </p>
-              <p className="animate-slide-up animate-delay-400">
-                ひとりひとりが未来を決める担い手として、ほしい未来はどんなものか、なりゆきの未来にそれはあるのか。その二つにギャップがあるなら、小さな一歩をどう踏み出すかを学ぶための機会を創る。
-              </p>
-            </div>
-            
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-8 mt-16">
-              <div className="text-center animate-fade-in animate-delay-100">
-                <div className="w-16 h-16 bg-asunooto-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-asunooto-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 6.253v13m0-13C10.832 5.477 9.246 5 7.5 5S4.168 5.477 3 6.253v13C4.168 18.477 5.754 18 7.5 18s3.332.477 4.5 1.253m0-13C13.168 5.477 14.754 5 16.5 5c1.747 0 3.332.477 4.5 1.253v13C19.832 18.477 18.247 18 16.5 18c-1.746 0-3.332.477-4.5 1.253" />
-                  </svg>
-                </div>
-                <h3 className="font-display font-bold text-lg mb-2">教育イノベーション</h3>
-                <p className="text-sm text-gray-600">地域を旅しながら学ぶ新しい大学の形</p>
-              </div>
-              
-              <div className="text-center animate-fade-in animate-delay-200">
-                <div className="w-16 h-16 bg-asunooto-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-asunooto-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z" />
-                  </svg>
-                </div>
-                <h3 className="font-display font-bold text-lg mb-2">地域共創</h3>
-                <p className="text-sm text-gray-600">都市と農村をつなぐコミュニティづくり</p>
-              </div>
-              
-              <div className="text-center animate-fade-in animate-delay-300">
-                <div className="w-16 h-16 bg-asunooto-light rounded-full flex items-center justify-center mx-auto mb-4">
-                  <svg className="w-8 h-8 text-asunooto-blue" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M21 12a9 9 0 01-9 9m9-9a9 9 0 00-9-9m9 9H3m9 9a9 9 0 01-9-9m9 9c1.657 0 3-4.03 3-9s-1.343-9-3-9m0 18c-1.657 0-3-4.03-3-9s1.343-9 3-9m-9 9a9 9 0 019-9" />
-                  </svg>
-                </div>
-                <h3 className="font-display font-bold text-lg mb-2">持続可能な未来</h3>
-                <p className="text-sm text-gray-600">次世代に残す豊かな社会の実現</p>
-              </div>
-            </div>
+      {/* メンバー */}
+      <section id="members" className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            メンバー
+          </h2>
+          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
+            {members.map((member) => (
+              <MemberCard key={member.id} member={member} />
+            ))}
           </div>
         </div>
       </section>
 
-      {/* 沿革セクション */}
-      <section id="history" className="py-16 md:py-24 bg-gray-50">
-        <div className="container mx-auto px-4 md:px-6">
+      {/* 沿革 */}
+      <section id="history" className="py-20 bg-white">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            沿革
+          </h2>
           <div className="max-w-3xl mx-auto">
-            <div className="text-center mb-12">
-              <p className="section-subtitle animate-fade-in">HISTORY</p>
-              <h2 className="section-title animate-fade-in animate-delay-100">沿革</h2>
-            </div>
-            
-            <div className="bg-white rounded-xl shadow-sm p-8 md:p-12">
+            <div className="relative">
+              <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-300"></div>
               <div className="space-y-8">
-                {history.map((item, index) => (
-                  <div 
-                    key={item.id}
-                    className="relative pl-8 border-l-2 border-asunooto-light animate-slide-up"
-                    style={{ animationDelay: `${200 + index * 100}ms` }}
-                  >
-                    <div className="absolute -left-2 top-0 w-4 h-4 bg-asunooto-blue rounded-full"></div>
-                    <div className="flex items-baseline gap-4 mb-2">
-                      <span className="text-asunooto-blue font-bold text-lg">
-                        {item.year}
-                        {item.month && <span className="text-sm font-medium">.{item.month}</span>}
-                      </span>
+                {history.map((item) => (
+                  <div key={item.id} className="relative flex items-start">
+                    <div className="absolute left-8 w-4 h-4 bg-asunooto-blue rounded-full -translate-x-1/2 ring-4 ring-white"></div>
+                    <div className="ml-16 bg-white rounded-lg p-6 shadow-sm border border-gray-100">
+                      <div className="flex items-center mb-2">
+                        <span className="text-asunooto-blue font-bold text-lg">
+                          {item.year}年
+                        </span>
+                        {item.month && (
+                          <span className="text-gray-600 ml-2">{item.month}</span>
+                        )}
+                      </div>
+                      <p className="text-gray-700 leading-relaxed">
+                        {item.event}
+                      </p>
                     </div>
-                    <p className="text-gray-700 leading-relaxed">
-                      {item.content}
-                    </p>
                   </div>
                 ))}
               </div>
@@ -151,103 +134,16 @@ export default function Home({ members, news, history }: HomeProps) {
         </div>
       </section>
 
-      {/* ニュースセクション */}
-      <section id="news" className="py-16 md:py-24 bg-gray-50">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <p className="section-subtitle animate-fade-in">NEWS</p>
-            <h2 className="section-title animate-fade-in animate-delay-100">ニュース</h2>
-          </div>
-          
-          <div className="max-w-3xl mx-auto bg-white rounded-xl shadow-sm p-6 md:p-8">
-            {news.length > 0 ? (
-              news.map((item, index) => (
-                <NewsItem key={item.id} news={item} delay={200 + index * 100} />
-              ))
-            ) : (
-              <p className="text-center text-gray-500 py-8">
-                ニュースはありません
-              </p>
-            )}
-          </div>
-        </div>
-      </section>
-
-      {/* 沿革セクション */}
-      <section id="history" className="py-16 md:py-24 bg-white">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <p className="section-subtitle animate-fade-in">HISTORY</p>
-            <h2 className="section-title animate-fade-in animate-delay-100">沿革</h2>
-          </div>
-          
-          <div className="max-w-3xl mx-auto">
-            <div className="relative">
-              {/* 縦線 */}
-              <div className="absolute left-0 md:left-24 top-0 bottom-0 w-0.5 bg-gray-200"></div>
-              
-              {/* 沿革アイテム */}
-              {history.map((item, index) => (
-                <div 
-                  key={item.id} 
-                  className="flex gap-4 md:gap-8 mb-8 last:mb-0 animate-slide-up"
-                  style={{ animationDelay: `${200 + index * 100}ms` }}
-                >
-                  <div className="flex-shrink-0 w-20 md:w-24 text-right">
-                    <span className="font-display text-lg font-bold text-asunooto-blue">
-                      {item.year}
-                    </span>
-                    {item.month && (
-                      <span className="text-sm text-gray-500 block">{item.month}</span>
-                    )}
-                  </div>
-                  
-                  <div className="relative flex-grow pl-8">
-                    {/* 点 */}
-                    <div className="absolute -left-2 top-2 w-4 h-4 bg-white border-2 border-asunooto-blue rounded-full"></div>
-                    
-                    <p className="text-gray-700 leading-relaxed">
-                      {item.event}
-                    </p>
-                  </div>
-                </div>
-              ))}
-            </div>
-          </div>
-        </div>
-      </section>
-
-      {/* メンバーセクション */}
-      <section id="members" className="py-16 md:py-24 bg-gray-50">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="text-center mb-12">
-            <p className="section-subtitle animate-fade-in">MEMBERS</p>
-            <h2 className="section-title animate-fade-in animate-delay-100">メンバー紹介</h2>
-          </div>
-          
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-            {members.map((member, index) => (
-              <MemberCard key={member.id} member={member} delay={200 + index * 100} />
+      {/* お知らせ */}
+      <section id="news" className="py-20 bg-gray-50">
+        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
+          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-12">
+            お知らせ
+          </h2>
+          <div className="max-w-3xl mx-auto space-y-6">
+            {news.map((item) => (
+              <NewsItem key={item.id} news={item} />
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* お問い合わせセクション */}
-      <section id="contact" className="py-16 md:py-24 bg-gradient-to-br from-asunooto-light to-blue-50">
-        <div className="container mx-auto px-4 md:px-6">
-          <div className="max-w-2xl mx-auto text-center">
-            <p className="section-subtitle animate-fade-in">CONTACT</p>
-            <h2 className="section-title animate-fade-in animate-delay-100">お問い合わせ</h2>
-            <p className="text-gray-700 mt-6 mb-8 animate-slide-up animate-delay-200">
-              ご質問・ご相談はお気軽にお問い合わせください
-            </p>
-            <a 
-              href="mailto:info@asunooto.co.jp"
-              className="button-primary inline-block animate-slide-up animate-delay-300"
-            >
-              メールでお問い合わせ
-            </a>
           </div>
         </div>
       </section>
@@ -259,12 +155,15 @@ export const getStaticProps: GetStaticProps<HomeProps> = async () => {
   const members = await getMembers()
   const news = await getNews()
   const history = await getHistory()
-
+  
   return {
     props: {
       members,
       news,
       history,
     },
+    revalidate: 3600, // 1時間ごとに再生成
   }
 }
+
+export default Home
