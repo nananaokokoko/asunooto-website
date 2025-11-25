@@ -35,15 +35,6 @@ export interface History {
   order: number
 }
 
-// 沿革情報の型定義
-export interface History {
-  id: string
-  year: string
-  month?: string
-  content: string
-  order: number
-}
-
 // メンバー情報を取得
 export async function getMembers(): Promise<Member[]> {
   if (!process.env.NOTION_MEMBERS_DATABASE_ID) {
@@ -133,37 +124,6 @@ export async function getHistory(): Promise<History[]> {
       month: page.properties['月']?.rich_text?.[0]?.plain_text || '',
       event: page.properties['出来事']?.title?.[0]?.plain_text || '',
       order: page.properties['順序']?.number || 999,
-    }))
-  } catch (error) {
-    console.error('Failed to fetch history from Notion:', error)
-    return getDummyHistory()
-  }
-}
-
-// 沿革情報を取得
-export async function getHistory(): Promise<History[]> {
-  if (!process.env.NOTION_HISTORY_DATABASE_ID) {
-    // Notion未設定の場合はダミーデータを返す
-    return getDummyHistory()
-  }
-
-  try {
-    const response = await notion.databases.query({
-      database_id: process.env.NOTION_HISTORY_DATABASE_ID,
-      sorts: [
-        {
-          property: '順序',
-          direction: 'descending',
-        },
-      ],
-    })
-
-    return response.results.map((page: any) => ({
-      id: page.id,
-      year: page.properties['年']?.title?.[0]?.plain_text || '',
-      month: page.properties['月']?.rich_text?.[0]?.plain_text || '',
-      content: page.properties['内容']?.rich_text?.[0]?.plain_text || '',
-      order: page.properties['順序']?.number || 0,
     }))
   } catch (error) {
     console.error('Failed to fetch history from Notion:', error)
@@ -293,46 +253,6 @@ function getDummyHistory(): History[] {
       month: '',
       event: 'さとのば大学5周年',
       order: 8,
-    },
-  ]
-}
-
-function getDummyHistory(): History[] {
-  return [
-    {
-      id: '1',
-      year: '2015',
-      month: '',
-      content: '株式会社アスノオト創業。島根県海士町での活動で知られる株式会社風と土と（旧：株式会社巡の環）の共同創業者である信岡良亮が、地域と都市の新しい関係作りのために創業',
-      order: 1,
-    },
-    {
-      id: '2',
-      year: '2016',
-      month: '',
-      content: '地域共創カレッジを開始。先進5地域（西粟倉村、神山町、上勝町、海士町、女川町）と連携した人材育成プロジェクト',
-      order: 2,
-    },
-    {
-      id: '3',
-      year: '2019',
-      month: '',
-      content: 'さとのば大学を開校。地域を巡りながら仲間と学び合う新しい大学の形を提案',
-      order: 3,
-    },
-    {
-      id: '4',
-      year: '2021',
-      month: '4',
-      content: '新潟産業大学と連携し「さとまなプログラム」を開講。文部科学省認定校との教育プログラム連携',
-      order: 4,
-    },
-    {
-      id: '5',
-      year: '2021',
-      month: '9',
-      content: '小林和彦氏が社外取締役に就任。地域連携・ネットワーク強化へ',
-      order: 5,
     },
   ]
 }
