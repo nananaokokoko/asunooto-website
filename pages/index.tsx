@@ -1,338 +1,364 @@
+/* eslint-disable @next/next/no-img-element */
 import React from 'react'
-import { GetStaticProps } from 'next'
-import Head from 'next/head'
+import type { GetStaticProps } from 'next'
+import Link from 'next/link'
 import Layout from '../components/Layout'
 import MemberCard from '../components/MemberCard'
-import NewsItem from '../components/NewsItem'
-import { getMembers, getNews, getHistory, Member, News, History } from '../lib/notion'
+import { formatDate } from '../lib/format'
+import {
+  getMembers,
+  getNewsList,
+  getHistory,
+  getCompany,
+  getMessage,
+  getOwners,
+  Member,
+  NewsItem,
+  HistoryItem,
+  CompanyRow,
+  Message,
+} from '../lib/notion'
 
-interface HomeProps {
+interface Props {
   members: Member[]
-  news: News[]
-  history: History[]
+  news: NewsItem[]
+  history: HistoryItem[]
+  company: CompanyRow[]
+  message: Message
+  ownersCount: number
 }
 
-const Home: React.FC<HomeProps> = ({ members, news, history }) => {
+// ---- ここから下の3つは、サイトに直接書いてある内容です ----
+const PILLARS = [
+  {
+    name: '旅する大学（4年制）',
+    text: '【仮】説明文を入れます。',
+    image: '/images/course01.jpg',
+    href: 'https://satonova.org/',
+    color: 'pink',
+  },
+  {
+    name: '地域おこし協力隊研修【仮・事業名称未定】',
+    text: '【仮】説明文を入れます。',
+    image: null,
+    href: null,
+    color: 'blue',
+  },
+  {
+    name: 'Lifelong Learning Community',
+    text: '【仮】説明文を入れます。',
+    image: null,
+    href: null,
+    color: 'orange',
+  },
+]
+const RELATED = [
+  { name: '高校向け探究支援事業', image: '/images/project01.jpg' },
+  { name: '地域留学体験プログラム', image: '/images/project02.jpg' },
+  { name: '一般向け公開講義', image: '/images/project03.jpg' },
+]
+const PAST = [
+  { name: 'しごとバー神田\n企画・運営', image: '/images/member_shigotobar.jpg' },
+  { name: '地域共創カレッジ\n運営', image: '/images/member_colledge.jpg' },
+  { name: '錦町ブンカイサン\nアンバサダー', image: '/images/member_bunkaisan.jpg' },
+  { name: 'TIPS\nアンバサダー', image: '/images/member_tips.jpg' },
+  { name: 'ないものはないラボ\n参画', image: '/images/member_naimonohanai.jpg' },
+  { name: '島の大使館\n運営', image: '/images/member_taishikan.jpg' },
+]
+
+function Plane({ color }: { color: 'b' | 'o' | 'p' }) {
+  return (
+    <div className="plane-line" aria-hidden="true">
+      <span className="dots" />
+      <img src={`/images/paper_${color}.png`} alt="" className="plane" />
+    </div>
+  )
+}
+
+export default function Home({ members, news, history, company, message, ownersCount }: Props) {
+  const officers = members.filter((m) => m.group === '役員')
+  const staff = members.filter((m) => m.group !== '役員')
   return (
     <Layout>
-      <Head>
-        <title>株式会社アスノオト - ASUNOOTO</title>
-        <meta name="description" content="未来に希望を持ち、ほしい未来のために自ら共創できる人々であふれる社会を目指します。" />
-        <link rel="icon" href="/favicon.ico" />
-      </Head>
-
-      {/* ヒーローセクション */}
-      <section className="relative min-h-[600px] flex items-center justify-center overflow-hidden bg-gradient-to-b from-white to-blue-50">
-        <div className="relative z-10 text-center px-4 sm:px-6 lg:px-8">
-          <div className="mb-8">
-            {/* アスノオトロゴ */}
-            <img 
-              src="/asunooto-logo.png" 
-              alt="アスノオト" 
-              className="mx-auto h-24 md:h-32 mb-4"
-            />
-          </div>
+      {/* ---------- メインビジュアル ---------- */}
+      <header className="hero">
+        <svg className="hero-bg" viewBox="0 0 1440 1466" preserveAspectRatio="none" aria-hidden="true">
+          <polygon fill="#5EBAE7" points="0,0 0,1466 720,1294 720,0" />
+          <polygon fill="#FC74B4" points="720,0 720,1294 1440,1466 1440,0" />
+          <polygon fill="#FFD83B" points="0,0 0,1294 720,1466 720,0" />
+          <polygon fill="#FDD034" points="720,0 720,1466 1440,1294 1440,0" />
+        </svg>
+        <div className="hero-inner">
+          <h1>
+            <img src="/images/logo2.svg" alt="アスノオト ASUNOOTO" className="hero-logo" />
+          </h1>
+          <img src="/images/paper_w.png" alt="" className="hero-plane" aria-hidden="true" />
+          <p className="pill">Create to Social-With Relation</p>
         </div>
-      </section>
+      </header>
 
-      {/* アスノオトとは */}
-      <section id="about" className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-            <span className="bg-gradient-to-r from-blue-400 via-pink-400 to-yellow-400 text-transparent bg-clip-text">
-              アスノオト
-            </span>
-            <span className="text-gray-900 ml-2">とは？</span>
+      <main className="light">
+        <img src="/images/cloud/cloud_02.png" alt="" className="cloud cloud-a" aria-hidden="true" />
+        <img src="/images/cloud/cloud_05.png" alt="" className="cloud cloud-b" aria-hidden="true" />
+        <img src="/images/cloud/cloud_06.png" alt="" className="cloud cloud-c" aria-hidden="true" />
+        <img src="/images/cloud/cloud_07.png" alt="" className="cloud cloud-d" aria-hidden="true" />
+        <img src="/images/cloud/cloud_03.png" alt="" className="cloud cloud-e" aria-hidden="true" />
+
+        {/* ---------- アスノオトとは？ ---------- */}
+        <section id="about" className="section">
+          <h2 className="about-title">
+            <img src="/images/about.png" alt="アスノオトとは？" />
           </h2>
-          
-          <div className="bg-gray-50 rounded-2xl p-8 md:p-12">
-            <p className="text-center text-gray-700 leading-relaxed mb-8">
-              アスノオトには
+          <div className="about-card">
+            <p>アスノオトには</p>
+            <p className="about-words">
+              <span className="c-blue">「明日」</span>の<span className="c-orange">「音」</span>▷ 未来に向けた
+              <span className="c-pink">協和音</span>
+              <br />
+              <span className="c-pink">「us」</span>
+              <span className="c-blue">「note」</span>▷<span className="c-orange">“私たち”</span>
+              として書きつづる
             </p>
-            <div className="space-y-4 mb-8">
-              <p className="text-center">
-                <span className="text-blue-500 font-bold">「明日」</span>の
-                <span className="text-yellow-500 font-bold">「音」</span> ▷ 
-                未来に向けた<span className="text-pink-500 font-bold">協和音</span>
-              </p>
-              <p className="text-center">
-                <span className="text-pink-500 font-bold">「us」</span>
-                <span className="text-blue-500 font-bold">「note」</span> ▷ 
-                <span className="text-yellow-500">"私たち"</span>として書きつづる
-              </p>
-            </div>
-            <p className="text-center text-gray-700 leading-relaxed">
-              という、2つの想いを込めています。
-            </p>
-            <p className="text-center text-gray-700 leading-relaxed mt-6">
-              未来に希望を持ち、ほしい未来のために<br />
+            <p>という、2つの想いを込めています。</p>
+            <p className="about-last">
+              未来に希望を持ち、ほしい未来のために
+              <br />
               自ら共創できる人々であふれる社会を目指します。
             </p>
           </div>
-        </div>
-      </section>
+          <Plane color="b" />
+        </section>
 
-      {/* 事業内容 */}
-      <section id="project" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            PROJECT
-          </h2>
-          <p className="text-center text-blue-500 text-lg mb-12">事業内容</p>
-          
-          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm">
-            <div className="flex items-center mb-6">
-              <img 
-                src="/satonova-logo.png" 
-                alt="さとのば大学" 
-                className="h-16 mr-4"
-              />
-              <h3 className="text-2xl font-bold text-gray-900">さとのば大学</h3>
-            </div>
-            <p className="text-gray-700 leading-loose">
-              日本全国４つの地域に１年ずつ暮らしながら、自分で立てたテーマに現地の人々と共に取り組む「プロジェクト学習」と、
-              地域共創領域のトップランナーである講師陣や在校生と学び合う「オンライン学習」を行き来しながら学ぶ、
-              新しいスタイルの市民大学です。
-            </p>
-            <p className="text-gray-700 leading-loose mt-4">
-              「自分らしく社会と関わり、仲間と共にほしい未来を自分たちの手で創る」ことができる
-              "未来共創人材"の育成を目指します。
-            </p>
-            <p className="mt-6">
-              <a href="https://satonova.org/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 transition-colors">
-                さとのば大学の詳細はこちら →
-              </a>
-            </p>
+        {/* ---------- 事業内容 ---------- */}
+        <section id="project" className="section">
+          <div className="heading c-blue">
+            <p className="en">PROJECT</p>
+            <h2>事業内容</h2>
+          </div>
+          <a href="https://satonova.org/" className="satonova-logo">
+            <img src="/images/member_satonova.jpg" alt="さとのば大学" />
+          </a>
+          <p className="lead">
+            日本全国４つの地域に１年ずつ暮らしながら、自分で立てたテーマに現地の人々と共に取り組む「プロジェクト学習」と、地域共創領域のトップランナーである講師陣や在校生と学び合う「オンライン学習」を行き来しながら学ぶ、新しいスタイルの市民大学です。
+          </p>
+          <p className="lead">
+            「自分らしく社会と関わり、仲間と共にほしい未来を自分たちの手で創る」ことができる“未来共創人材”
+            の育成を目指します。
+          </p>
+
+          <h3 className="sub">3つの柱</h3>
+          <div className="grid3">
+            {PILLARS.map((p) => (
+              <article key={p.name} className="card">
+                {p.image ? (
+                  <img src={p.image} alt="" className="card-img" loading="lazy" />
+                ) : (
+                  <div className={`card-img card-blank bg-${p.color}`} aria-hidden="true" />
+                )}
+                <div className="card-body">
+                  <h4 className={`c-${p.color}`}>{p.name}</h4>
+                  <p>{p.text}</p>
+                  {p.href ? (
+                    <a href={p.href} className="more">
+                      詳しくはこちら →
+                    </a>
+                  ) : (
+                    <span className="tag">準備中</span>
+                  )}
+                </div>
+              </article>
+            ))}
           </div>
 
-          {/* 過去の事業 */}
-          <div className="mt-12">
-            <h3 className="text-xl font-bold text-center text-blue-500 mb-8">過去の事業</h3>
-            <div className="grid md:grid-cols-3 gap-6">
-              <div className="text-center">
-                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-600">ロゴ</span>
+          <h3 className="sub">さとのば大学関連事業</h3>
+          <div className="grid3">
+            {RELATED.map((r) => (
+              <article key={r.name} className="card">
+                <img src={r.image} alt="" className="card-img" loading="lazy" />
+                <div className="card-body">
+                  <h4>{r.name}</h4>
                 </div>
-                <p className="font-medium">しごとバー神田・運営</p>
-              </div>
-              <div className="text-center">
-                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-600">ロゴ</span>
-                </div>
-                <p className="font-medium">地域共創カレッジ運営</p>
-              </div>
-              <div className="text-center">
-                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-600">ロゴ</span>
-                </div>
-                <p className="font-medium">錦町ブンカイサン<br />アンバサダー</p>
-              </div>
-            </div>
-            <div className="grid md:grid-cols-3 gap-6 mt-6">
-              <div className="text-center">
-                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-600">ロゴ</span>
-                </div>
-                <p className="font-medium">TIPSアンバサダー</p>
-              </div>
-              <div className="text-center">
-                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-600">ロゴ</span>
-                </div>
-                <p className="font-medium">ないものはないラボ参画</p>
-              </div>
-              <div className="text-center">
-                <div className="w-32 h-32 mx-auto mb-4 rounded-full bg-gray-200 flex items-center justify-center">
-                  <span className="text-gray-600">ロゴ</span>
-                </div>
-                <p className="font-medium">島の大使館運営</p>
-              </div>
-            </div>
+              </article>
+            ))}
           </div>
-        </div>
-      </section>
+          <p className="center">
+            <a href="https://satonova.org/" className="btn btn-white">
+              さとのば大学公式ホームページはこちら →
+            </a>
+          </p>
 
-      {/* 代表メッセージ */}
-      <section id="message" className="py-20 bg-white">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            MESSAGE
-          </h2>
-          <p className="text-center text-pink-500 text-lg mb-12">代表メッセージ</p>
-          
-          <div className="bg-gradient-to-br from-blue-50 to-pink-50 rounded-2xl p-8 md:p-12">
-            <p className="text-gray-700 leading-loose mb-4">
-              一人では未来に希望を見出すことが難しいと思ったとき、諦めるでも孤軍奮闘するでもなく、
-              一緒に未来を作ろうとしてくれる仲間がいることが、僕自身にとって一番の希望になっています。
-            </p>
-            <p className="text-gray-700 leading-loose mb-4">
-              そんな「共創仲間」がいることが当たり前の社会になることを願いながら、
-              人と人が未来に向けて出会える場づくりを一つ一つ形にしていきたいと思っています。
-            </p>
-            <p className="text-gray-700 leading-loose mb-4">
-              各事業も、非営利型株式会社としての運営も、未来共創のための仲間集めの仕組みと考えておりますので、
-              これからも"目指す未来"に共感いただける方と、色々な関わりを創造していきたいと思います。
-            </p>
-            <p className="text-right text-gray-900 font-bold mt-6">
-              代表取締役 信岡良亮
-            </p>
+          <h3 className="sub">過去の事業</h3>
+          <ul className="past">
+            {PAST.map((p) => (
+              <li key={p.name}>
+                <img src={p.image} alt="" loading="lazy" />
+                <span>{p.name}</span>
+              </li>
+            ))}
+          </ul>
+          <Plane color="o" />
+        </section>
+
+        {/* ---------- 代表メッセージ ---------- */}
+        <section id="message" className="section">
+          <div className="heading c-orange">
+            <p className="en">MESSAGE</p>
+            <h2>代表メッセージ</h2>
           </div>
-        </div>
-      </section>
+          <div className="message">
+            {message.body.map((p, i) => (
+              <p key={i}>{p}</p>
+            ))}
+            <p className="signature">{message.signature}</p>
+          </div>
+          <Plane color="p" />
+        </section>
 
-      {/* ご支援いただける方へ */}
-      <section id="support" className="py-20 bg-gray-50">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            SUPPORT
-          </h2>
-          <p className="text-center text-pink-500 text-lg mb-12">ご支援いただける方へ</p>
-          
-          <div className="bg-white rounded-2xl p-8 md:p-12 shadow-sm">
-            <p className="text-gray-700 leading-loose mb-4">
-              私たちは、理念に共感してくださる皆さまと共に会社を育てるために「非営利型株式会社」として運営をしています。
+        {/* ---------- ご支援いただける方へ ---------- */}
+        <section id="support" className="section">
+          <div className="heading c-pink">
+            <p className="en">SUPPORT</p>
+            <h2>ご支援いただける方へ</h2>
+          </div>
+          <p className="lead">
+            私たちは、理念に共感してくださる皆さまと共に会社を育てるために「非営利型株式会社」として運営をしています。
+          </p>
+          <p className="center">
+            <a href="https://greenz.jp/2024/11/19/satonova_2024/" className="btn btn-white">
+              非営利型株式会社について（紹介記事） →
+            </a>
+          </p>
+          <p className="lead">
+            株主の方は「オーナー」として、主にさとのば大学の様々な取り組みにご参加いただけます。
+          </p>
+          <p className="center">
+            <a href="https://satonova.org/owners" className="btn btn-white">
+              詳しくはこちら →
+            </a>
+          </p>
+        </section>
+      </main>
+
+      {/* ---------- ここから下は緑の部分 ---------- */}
+      <svg className="green-edge" viewBox="0 0 1440 80" preserveAspectRatio="none" aria-hidden="true">
+        <polygon fill="#55D8AB" points="0,0 720,80 1440,0 1440,80 0,80" />
+      </svg>
+      <div className="green">
+        <section id="news" className="section">
+          <div className="heading-g">
+            <h2>お知らせ</h2>
+            <p className="en">WHAT&apos;S NEW</p>
+          </div>
+          <ul className="news-list">
+            {news.slice(0, 5).map((n) => (
+              <li key={n.slug}>
+                <Link href={`/news/${n.slug}`}>
+                  <time dateTime={n.date}>{formatDate(n.date)}</time>
+                  <span>{n.title}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+          {news.length > 5 && (
+            <p className="center">
+              <Link href="/news" className="btn btn-dark">
+                過去のお知らせを見る
+              </Link>
             </p>
-            <p className="mb-4">
-              <a href="https://greenz.jp/2024/11/19/satonova_2024/" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 transition-colors">
-                非営利型株式会社について(紹介記事) →
-              </a>
-            </p>
-            <p className="text-gray-700 leading-loose mb-4">
-              株主の方は「オーナー」として、主にさとのば大学の様々な取り組みにご参加いただけます。
-            </p>
+          )}
+        </section>
+
+        <section id="member" className="section">
+          <div className="heading-g">
+            <h2>メンバー紹介</h2>
+            <p className="en">MEMBER</p>
+          </div>
+          <h3 className="sub-g">役員</h3>
+          <div className="members">
+            {officers.map((m) => (
+              <MemberCard key={m.id} member={m} />
+            ))}
+          </div>
+          <h3 className="sub-g">スタッフ</h3>
+          <div className="members members-staff">
+            {staff.map((m) => (
+              <MemberCard key={m.id} member={m} small />
+            ))}
+          </div>
+        </section>
+
+        <section id="owners" className="section">
+          <div className="heading-g">
+            <h2>共創オーナー</h2>
+            <p className="en">OWNERS</p>
+          </div>
+          <div className="owners-teaser">
             <p>
-              <a href="https://satonova.org/owners" target="_blank" rel="noopener noreferrer" className="text-blue-500 hover:text-blue-700 transition-colors">
-                詳しくはこちら →
-              </a>
+              【仮】アスノオトは、配当をしない「非営利型株式会社」です。株主の皆さまを、わたしたちは「共創オーナー」と呼んでいます。
+              未来を共に創る仲間として、たくさんの方々がアスノオトとさとのば大学を支えてくださっています。
+            </p>
+            <p className="center">
+              <Link href="/owners" className="btn btn-dark">
+                {ownersCount > 0 ? `共創オーナーの皆さま（${ownersCount}名）を見る` : '共創オーナーについて'}
+              </Link>
             </p>
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* メンバー */}
-      <section id="members" className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            MEMBERS
-          </h2>
-          <p className="text-center text-orange-500 text-lg mb-12">メンバー紹介</p>
-          <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-            {members.map((member) => (
-              <MemberCard key={member.id} member={member} />
+        <section id="company" className="section">
+          <div className="heading-g">
+            <h2>会社概要</h2>
+            <p className="en">COMPANY</p>
+          </div>
+          <dl className="company">
+            {company.map((row) => (
+              <React.Fragment key={row.label}>
+                <dt>{row.label}</dt>
+                <dd>{row.value}</dd>
+              </React.Fragment>
             ))}
-          </div>
-        </div>
-      </section>
-
-      {/* お知らせ */}
-      <section id="news" className="py-20 bg-gray-50">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            NEWS
-          </h2>
-          <p className="text-center text-blue-500 text-lg mb-12">お知らせ</p>
-          <div className="max-w-3xl mx-auto space-y-6">
-            {news.map((item) => (
-              <NewsItem key={item.id} news={item} />
+          </dl>
+          <h3 className="sub-g center">沿革</h3>
+          <ol className="history">
+            {history.map((h, i) => (
+              <li key={i}>
+                <strong>
+                  {h.year}年{h.month ? `${h.month}月` : ''}
+                </strong>
+                <span>{h.text}</span>
+              </li>
             ))}
-          </div>
-        </div>
-      </section>
+          </ol>
+        </section>
 
-      {/* 沿革 */}
-      <section id="history" className="py-20 bg-white">
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            HISTORY
-          </h2>
-          <p className="text-center text-purple-500 text-lg mb-12">沿革</p>
-          <div className="max-w-3xl mx-auto">
-            <div className="relative">
-              <div className="absolute left-8 top-0 bottom-0 w-0.5 bg-gray-300"></div>
-              <div className="space-y-8">
-                {history.map((item) => (
-                  <div key={item.id} className="relative flex items-start">
-                    <div className="absolute left-8 w-4 h-4 bg-gradient-to-br from-blue-400 to-pink-400 rounded-full -translate-x-1/2 ring-4 ring-white"></div>
-                    <div className="ml-16 bg-white rounded-lg p-6 shadow-sm border border-gray-100">
-                      <div className="flex items-center mb-2">
-                        <span className="text-blue-500 font-bold text-lg">
-                          {item.year}年
-                        </span>
-                        {item.month && (
-                          <span className="text-gray-600 ml-2">{item.month}</span>
-                        )}
-                      </div>
-                      <p className="text-gray-700 leading-relaxed">
-                        {item.event}
-                      </p>
-                    </div>
-                  </div>
-                ))}
-              </div>
-            </div>
+        <section id="contact" className="section contact">
+          <a href="mailto:info@asunooto.co.jp" className="contact-btn">
+            お問い合わせ
+          </a>
+          <p>info@asunooto.co.jp</p>
+          <div className="planes" aria-hidden="true">
+            <img src="/images/paper_p.png" alt="" />
+            <img src="/images/paper_b.png" alt="" />
+            <img src="/images/paper_o.png" alt="" />
           </div>
-        </div>
-      </section>
-
-      {/* 会社概要 */}
-      <section id="company" className="py-20 bg-gradient-to-b from-teal-400 to-teal-500">
-        <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8">
-          <h2 className="text-3xl md:text-4xl font-bold text-center text-gray-900 mb-4">
-            会社概要
-          </h2>
-          <p className="text-center text-white text-lg mb-12">COMPANY</p>
-          
-          <div className="bg-white/95 rounded-2xl p-8 md:p-12 shadow-lg">
-            <dl className="space-y-4">
-              <div className="flex flex-col sm:flex-row">
-                <dt className="font-bold text-gray-900 sm:w-32">会社名</dt>
-                <dd className="text-gray-700 sm:ml-8">株式会社アスノオト（英文社名：asunooto.co.,ltd.）</dd>
-              </div>
-              <div className="flex flex-col sm:flex-row">
-                <dt className="font-bold text-gray-900 sm:w-32">設立</dt>
-                <dd className="text-gray-700 sm:ml-8">2015年5月22日</dd>
-              </div>
-              <div className="flex flex-col sm:flex-row">
-                <dt className="font-bold text-gray-900 sm:w-32">資本金</dt>
-                <dd className="text-gray-700 sm:ml-8">28,700,000円</dd>
-              </div>
-              <div className="flex flex-col sm:flex-row">
-                <dt className="font-bold text-gray-900 sm:w-32">代表者</dt>
-                <dd className="text-gray-700 sm:ml-8">代表取締役 信岡 良亮</dd>
-              </div>
-              <div className="flex flex-col sm:flex-row">
-                <dt className="font-bold text-gray-900 sm:w-32">所在地</dt>
-                <dd className="text-gray-700 sm:ml-8">〒101-0054 東京都千代田区神田錦町3‐21 (郵便BOX番号 1345)</dd>
-              </div>
-              <div className="flex flex-col sm:flex-row">
-                <dt className="font-bold text-gray-900 sm:w-32">事業内容</dt>
-                <dd className="text-gray-700 sm:ml-8">
-                  人材育成・教育事業<br />
-                  ICTを含めたコミュニケーション・コンサルティング<br />
-                  都市と地方、経営者と従業員、生産者と消費者といった対立関係を協働関係に変える相互理解支援
-                </dd>
-              </div>
-            </dl>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </Layout>
   )
 }
 
-export const getStaticProps: GetStaticProps<HomeProps> = async () => {
-  const members = await getMembers()
-  const news = await getNews()
-  const history = await getHistory()
-  
+export const getStaticProps: GetStaticProps<Props> = async () => {
+  const [members, news, history, company, message, owners] = await Promise.all([
+    getMembers(),
+    getNewsList(),
+    getHistory(),
+    getCompany(),
+    getMessage(),
+    getOwners(),
+  ])
   return {
-    props: {
-      members,
-      news,
-      history,
-    },
-    revalidate: 3600, // 1時間ごとに再生成
+    props: { members, news, history, company, message, ownersCount: owners.length },
+    // Notion を直すと、約1分後から新しい内容が表示されます
+    revalidate: 60,
   }
 }
-
-export default Home

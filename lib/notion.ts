@@ -1,272 +1,325 @@
+// Notion から内容を読み込む部分です。
+// Notion につながっていないとき・読み込みに失敗したときは、
+// content/site.json（控えの内容）を表示します。
 import { Client } from '@notionhq/client'
+import fallbackJson from '../content/site.json'
 
-// Notion APIクライアントの初期化
-const notion = new Client({
-  auth: process.env.NOTION_API_KEY,
-})
-
-// データベースIDの設定
-const MEMBERS_DATABASE_ID = process.env.NOTION_MEMBERS_DATABASE_ID || ''
-const NEWS_DATABASE_ID = process.env.NOTION_NEWS_DATABASE_ID || ''
-const HISTORY_DATABASE_ID = process.env.NOTION_HISTORY_DATABASE_ID || ''
-
-// メンバー情報の型定義
 export interface Member {
   id: string
   name: string
   title: string
-  role: string
-  description: string
+  group: string // 「役員」または「スタッフ」
   order: number
-  imageUrl?: string | null  // 画像URL追加
+  bio: string
+  photo: string | null
 }
-
-// ニュース情報の型定義
-export interface News {
-  id: string
+export interface NewsItem {
+  slug: string
+  date: string // 2026-12-01 の形
   title: string
-  date: string
-  content: string
-  category: string
-  url?: string | null
+  pageId?: string | null
+}
+export interface NewsArticle extends NewsItem {
+  bodyHtml: string
+}
+export interface HistoryItem {
+  year: number
+  month: number | null
+  text: string
+}
+export interface CompanyRow {
+  label: string
+  value: string
+}
+export interface Message {
+  body: string[]
+  signature: string
+}
+export interface Owner {
+  name: string
+  title: string
 }
 
-// 沿革情報の型定義
-export interface History {
-  id: string
-  year: string
-  month?: string | null
-  event: string
-  order: number
+const fallback = fallbackJson as unknown as {
+  members: Member[]
+  news: NewsArticle[]
+  history: HistoryItem[]
+  company: CompanyRow[]
+  message: Message
+  owners: Owner[]
 }
 
-// プロパティ値を安全に取得する関数
-function getPropertyValue(property: any, type: string): any {
-  if (!property) return null
-  
-  switch (type) {
-    case 'title':
-      return property.title?.[0]?.plain_text || ''
-    case 'rich_text':
-      return property.rich_text?.[0]?.plain_text || ''
-    case 'select':
-      return property.select?.name || ''
-    case 'number':
-      return property.number || 0
-    case 'date':
-      return property.date?.start || ''
-    case 'url':
-      return property.url || null
-    case 'files':
-      // ファイル&メディアプロパティから画像URLを取得
-      if (property.files && property.files.length > 0) {
-        const file = property.files[0]
-        if (file.type === 'file') {
-          return file.file.url
-        } else if (file.type === 'external') {
-          return file.external.url
-        }
+// Notion の接続キー（Vercel の環境変数 NOTION_TOKEN に入れます）
+const TOKEN = process.env.NOTION_TOKEN || ''
+
+// 「アスノオト公式サイト 更新用」ページの中にある表の番号
+const IDS = {
+  members: process.env.NOTION_MEMBERS_DB || '81a6cf48f5104bff9b430221db3f1de9',
+  news: process.env.NOTION_NEWS_DB || 'ec010e9f9261492ab4bcfd52337292af',
+  history: process.env.NOTION_HISTORY_DB || 'ef74577c2fd94929b907f0952f03d111',
+  company: process.env.NOTION_COMPANY_DB || '206f3f1aca1c439295ec36476c3f61b0',
+  owners: process.env.NOTION_OWNERS_DB || 'bd3b0f6380f5473d8a3c72e676ba3866',
+  message: process.env.NOTION_MESSAGE_PAGE || '416213b94be481a299a4e2829e32ad6d',
+}
+
+export const notionEnabled = TOKEN !== ''
+const notion = new Client({ auth: TOKEN || 'not-set' })
+
+// ---- 小さな道具 ----
+function plain(prop: any): string {
+  if (!prop) return ''
+  const list = prop.title || prop.rich_text || []
+  return list.map((t: any) => t.plain_text).join('').trim()
+}
+function num(prop: any): number | null {
+  return prop && typeof prop.number === 'number' ? prop.number : null
+}
+function esc(s: string): string {
+  return s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+}
+
+// 「公開する」にチェックが入っている行をすべて読む
+async function queryPublished(databaseId: string): Promise<any[]> {
+  const rows: any[] = []
+  let cursor: string | undefined = undefined
+  do {
+    const res: any = await notion.databases.query({
+      database_id: databaseId,
+      filter: { property: '公開する', checkbox: { equals: true } },
+      start_cursor: cursor,
+      page_size: 100,
+    })
+    rows.push(...res.results)
+    cursor = res.has_more ? res.next_cursor : undefined
+  } while (cursor)
+  return rows
+}
+
+async function listBlocks(blockId: string): Promise<any[]> {
+  const blocks: any[] = []
+  let cursor: string | undefined = undefined
+  do {
+    const res: any = await notion.blocks.children.list({ block_id: blockId, start_cursor: cursor, page_size: 100 })
+    blocks.push(...res.results)
+    cursor = res.has_more ? res.next_cursor : undefined
+  } while (cursor)
+  return blocks
+}
+
+function richToHtml(rich: any[]): string {
+  return (rich || [])
+    .map((t: any) => {
+      let s = esc(t.plain_text || '').replace(/\n/g, '<br>')
+      if (t.annotations?.bold) s = `<strong>${s}</strong>`
+      if (t.href && /^https?:\/\//.test(t.href)) s = `<a href="${esc(t.href)}">${s}</a>`
+      return s
+    })
+    .join('')
+}
+
+function blocksToHtml(blocks: any[]): string {
+  let html = ''
+  let listTag = ''
+  const closeList = () => {
+    if (listTag) {
+      html += `</${listTag}>`
+      listTag = ''
+    }
+  }
+  for (const b of blocks) {
+    const data = b[b.type] || {}
+    if (b.type === 'bulleted_list_item' || b.type === 'numbered_list_item') {
+      const tag = b.type === 'bulleted_list_item' ? 'ul' : 'ol'
+      if (listTag !== tag) {
+        closeList()
+        html += `<${tag}>`
+        listTag = tag
       }
-      return null
-    default:
-      return null
+      html += `<li>${richToHtml(data.rich_text)}</li>`
+      continue
+    }
+    closeList()
+    if (b.type === 'paragraph') {
+      const inner = richToHtml(data.rich_text)
+      if (inner) html += `<p>${inner}</p>`
+    } else if (b.type === 'heading_1' || b.type === 'heading_2' || b.type === 'heading_3') {
+      html += `<h3>${richToHtml(data.rich_text)}</h3>`
+    } else if (b.type === 'quote') {
+      html += `<blockquote>${richToHtml(data.rich_text)}</blockquote>`
+    } else if (b.type === 'image') {
+      const url = data.type === 'external' ? data.external?.url : data.file?.url
+      if (url) html += `<img src="${esc(url)}" alt="">`
+    }
   }
+  closeList()
+  return html
 }
 
-// メンバー情報を取得
+// ---- メンバー ----
 export async function getMembers(): Promise<Member[]> {
+  if (!notionEnabled) return fallback.members
   try {
-    if (!MEMBERS_DATABASE_ID) {
-      console.warn('NOTION_MEMBERS_DATABASE_ID is not set')
-      return getDummyMembers()
-    }
-
-    const response = await notion.databases.query({
-      database_id: MEMBERS_DATABASE_ID,
-      sorts: [
-        {
-          property: '順序',
-          direction: 'ascending',
-        },
-      ],
+    const rows = await queryPublished(IDS.members)
+    if (rows.length === 0) return fallback.members
+    const members = rows.map((page: any): Member => {
+      const p = page.properties
+      const name = plain(p['氏名'])
+      const backup = fallback.members.find((m) => m.name === name)
+      const hasPhoto = (p['写真']?.files || []).length > 0
+      return {
+        id: page.id,
+        name,
+        title: plain(p['肩書き']),
+        group: p['区分']?.select?.name || 'スタッフ',
+        order: num(p['並び順']) ?? 999,
+        bio: plain(p['紹介文']) || backup?.bio || '',
+        photo: hasPhoto ? `/api/photo?id=${page.id}` : backup?.photo || null,
+      }
     })
-
-    return response.results.map((page: any) => ({
-      id: page.id,
-      name: getPropertyValue(page.properties['名前'], 'title'),
-      title: getPropertyValue(page.properties['肩書き'], 'rich_text'),
-      role: getPropertyValue(page.properties['役職'], 'select'),
-      description: getPropertyValue(page.properties['説明'], 'rich_text'),
-      order: getPropertyValue(page.properties['順序'], 'number'),
-      imageUrl: getPropertyValue(page.properties['顔写真'], 'files'),  // 画像プロパティを追加
-    }))
-  } catch (error) {
-    console.error('Error fetching members:', error)
-    return getDummyMembers()
+    return members.sort((a, b) => a.order - b.order)
+  } catch (e) {
+    console.error('メンバーの読み込みに失敗しました', e)
+    return fallback.members
   }
 }
 
-// ニュース情報を取得
-export async function getNews(): Promise<News[]> {
+// ---- お知らせ ----
+function newsSlug(page: any): string {
+  const old = page.properties['旧URL']?.url || ''
+  const m = old.match(/(post-\d+)\.html/)
+  return m ? m[1] : page.id.replace(/-/g, '')
+}
+
+export async function getNewsList(): Promise<NewsItem[]> {
+  const backup = fallback.news.map(({ slug, date, title }) => ({ slug, date, title, pageId: null }))
+  if (!notionEnabled) return backup
   try {
-    if (!NEWS_DATABASE_ID) {
-      console.warn('NOTION_NEWS_DATABASE_ID is not set')
-      return getDummyNews()
-    }
-
-    const response = await notion.databases.query({
-      database_id: NEWS_DATABASE_ID,
-      sorts: [
-        {
-          property: '日付',
-          direction: 'descending',
-        },
-      ],
-    })
-
-    return response.results.map((page: any) => ({
-      id: page.id,
-      title: getPropertyValue(page.properties['タイトル'], 'title'),
-      date: getPropertyValue(page.properties['日付'], 'date'),
-      content: getPropertyValue(page.properties['内容'], 'rich_text'),
-      category: getPropertyValue(page.properties['カテゴリ'], 'select'),
-      url: getPropertyValue(page.properties['URL'], 'url'),
+    const rows = await queryPublished(IDS.news)
+    if (rows.length === 0) return backup
+    const list = rows.map((page: any): NewsItem => ({
+      slug: newsSlug(page),
+      date: page.properties['日付']?.date?.start?.slice(0, 10) || '',
+      title: plain(page.properties['タイトル']),
+      pageId: page.id,
     }))
-  } catch (error) {
-    console.error('Error fetching news:', error)
-    return getDummyNews()
+    return list.sort((a, b) => (a.date < b.date ? 1 : -1))
+  } catch (e) {
+    console.error('お知らせの読み込みに失敗しました', e)
+    return backup
   }
 }
 
-// 沿革情報を取得
-export async function getHistory(): Promise<History[]> {
-  try {
-    if (!HISTORY_DATABASE_ID) {
-      console.warn('NOTION_HISTORY_DATABASE_ID is not set')
-      return getDummyHistory()
+export async function getNewsArticle(slug: string): Promise<NewsArticle | null> {
+  const list = await getNewsList()
+  const item = list.find((n) => n.slug === slug)
+  if (!item) return null
+  const backup = fallback.news.find((n) => n.slug === slug)
+  let bodyHtml = ''
+  if (item.pageId) {
+    try {
+      bodyHtml = blocksToHtml(await listBlocks(item.pageId))
+    } catch (e) {
+      console.error('お知らせ本文の読み込みに失敗しました', e)
     }
+  }
+  // Notion 側の本文が空のときは、旧サイトから移した本文を使います
+  return { ...item, bodyHtml: bodyHtml || backup?.bodyHtml || '' }
+}
 
-    const response = await notion.databases.query({
-      database_id: HISTORY_DATABASE_ID,
-      sorts: [
-        {
-          property: '順序',
-          direction: 'ascending',
-        },
-      ],
-    })
-
-    return response.results.map((page: any) => ({
-      id: page.id,
-      year: getPropertyValue(page.properties['年'], 'rich_text'),
-      month: getPropertyValue(page.properties['月'], 'rich_text'),
-      event: getPropertyValue(page.properties['出来事'], 'title'),
-      order: getPropertyValue(page.properties['順序'], 'number'),
+// ---- 沿革 ----
+export async function getHistory(): Promise<HistoryItem[]> {
+  if (!notionEnabled) return fallback.history
+  try {
+    const rows = await queryPublished(IDS.history)
+    if (rows.length === 0) return fallback.history
+    const list = rows.map((page: any): HistoryItem => ({
+      year: num(page.properties['年']) ?? 0,
+      month: num(page.properties['月']),
+      text: plain(page.properties['出来事']),
     }))
-  } catch (error) {
-    console.error('Error fetching history:', error)
-    return getDummyHistory()
+    return list.sort((a, b) => a.year - b.year || (a.month ?? 0) - (b.month ?? 0))
+  } catch (e) {
+    console.error('沿革の読み込みに失敗しました', e)
+    return fallback.history
   }
 }
 
-// ダミーデータ（Notion未設定時用）
-function getDummyMembers(): Member[] {
-  return [
-    {
-      id: '1',
-      name: '山田 太郎',
-      title: '代表取締役',
-      role: '経営',
-      description: '「さとのば大学」の創設者。地域と都市をつなぐ新しい教育の形を追求しています。',
-      order: 1,
-      imageUrl: null,
-    },
-    {
-      id: '2',
-      name: '佐藤 花子',
-      title: 'プログラムディレクター',
-      role: '企画',
-      description: '地域プロジェクトの企画・運営を担当。学生たちの成長を支えています。',
-      order: 2,
-      imageUrl: null,
-    },
-    {
-      id: '3',
-      name: '鈴木 一郎',
-      title: 'コミュニティマネージャー',
-      role: '運営',
-      description: '地域との関係構築を担当。持続可能なコミュニティづくりに取り組んでいます。',
-      order: 3,
-      imageUrl: null,
-    },
-  ]
+// ---- 会社概要 ----
+export async function getCompany(): Promise<CompanyRow[]> {
+  if (!notionEnabled) return fallback.company
+  try {
+    const rows = await queryPublished(IDS.company)
+    if (rows.length === 0) return fallback.company
+    return rows
+      .map((page: any) => ({
+        label: plain(page.properties['項目']),
+        value: plain(page.properties['内容']),
+        order: num(page.properties['並び順']) ?? 999,
+      }))
+      .filter((r) => r.label !== 'お問い合わせ')
+      .sort((a, b) => a.order - b.order)
+      .map(({ label, value }) => ({ label, value }))
+  } catch (e) {
+    console.error('会社概要の読み込みに失敗しました', e)
+    return fallback.company
+  }
 }
 
-function getDummyNews(): News[] {
-  return [
-    {
-      id: '1',
-      title: '2024年度「さとのば大学」入学式を開催しました',
-      date: '2024-04-01',
-      content: '新入生20名を迎え、新年度がスタートしました。今年度も地域と共に学びを深めていきます。',
-      category: 'お知らせ',
-      url: null,
-    },
-    {
-      id: '2',
-      title: '岡山県真庭市との連携協定を締結',
-      date: '2024-03-15',
-      content: '持続可能な地域づくりに向けて、真庭市と包括的な連携協定を締結しました。',
-      category: '組織',
-      url: null,
-    },
-    {
-      id: '3',
-      title: '地域プロジェクト成果発表会を開催',
-      date: '2024-02-28',
-      content: '学生たちが1年間取り組んだプロジェクトの成果を地域の皆様に発表しました。',
-      category: 'イベント',
-      url: null,
-    },
-  ]
+// ---- 代表メッセージ ----
+// Notion のページは「説明 / 区切り線 / 本文 / 区切り線 / 署名」の順に書きます
+export async function getMessage(): Promise<Message> {
+  if (!notionEnabled) return fallback.message
+  try {
+    const blocks = await listBlocks(IDS.message)
+    const parts: string[][] = [[]]
+    for (const b of blocks) {
+      if (b.type === 'divider') parts.push([])
+      else if (b.type === 'paragraph') {
+        const text = (b.paragraph.rich_text || []).map((t: any) => t.plain_text).join('').trim()
+        if (text) parts[parts.length - 1].push(text)
+      }
+    }
+    const body = parts.length >= 2 ? parts[1] : parts[0]
+    const signature = parts.length >= 3 ? parts[2].join(' ') : fallback.message.signature
+    if (body.length === 0) return fallback.message
+    return { body, signature: signature || fallback.message.signature }
+  } catch (e) {
+    console.error('代表メッセージの読み込みに失敗しました', e)
+    return fallback.message
+  }
 }
 
-function getDummyHistory(): History[] {
-  return [
-    {
-      id: '1',
-      year: '2015',
-      month: '4月',
-      event: '株式会社アスノオト創業',
-      order: 1,
-    },
-    {
-      id: '2',
-      year: '2018',
-      month: '9月',
-      event: '「さとのば大学」プロジェクト開始',
-      order: 2,
-    },
-    {
-      id: '3',
-      year: '2019',
-      month: '4月',
-      event: '「さとのば大学」第1期生入学',
-      order: 3,
-    },
-    {
-      id: '4',
-      year: '2020',
-      month: null,
-      event: 'オンラインプログラム開始',
-      order: 4,
-    },
-    {
-      id: '5',
-      year: '2023',
-      month: '10月',
-      event: '創業8周年記念イベント開催',
-      order: 5,
-    },
-  ]
+// ---- 共創オーナー ----
+export async function getOwners(): Promise<Owner[]> {
+  if (!notionEnabled) return fallback.owners
+  try {
+    const rows = await queryPublished(IDS.owners)
+    return rows
+      .map((page: any) => ({
+        name: plain(page.properties['お名前']),
+        title: plain(page.properties['肩書き']),
+        order: num(page.properties['並び順']) ?? 9999,
+      }))
+      .filter((o) => o.name)
+      .sort((a, b) => a.order - b.order || a.name.localeCompare(b.name, 'ja'))
+      .map(({ name, title }) => ({ name, title }))
+  } catch (e) {
+    console.error('共創オーナーの読み込みに失敗しました', e)
+    return fallback.owners
+  }
+}
+
+// ---- メンバー写真（Notion の画像は約1時間で期限が切れるため、都度あたらしい場所を調べます）----
+export async function getMemberPhotoUrl(pageId: string): Promise<string | null> {
+  if (!notionEnabled) return null
+  const page: any = await notion.pages.retrieve({ page_id: pageId })
+  const file = page.properties?.['写真']?.files?.[0]
+  if (!file) return null
+  return file.type === 'external' ? file.external.url : file.file.url
+}
+
+// 2026-12-01 → 2026年12月01日
+export function formatDate(date: string): string {
+  const m = (date || '').match(/^(\d{4})-(\d{2})-(\d{2})/)
+  return m ? `${m[1]}年${m[2]}月${m[3]}日` : ''
 }
