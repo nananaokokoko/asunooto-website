@@ -47,6 +47,7 @@ const fallback = fallbackJson as unknown as {
   company: CompanyRow[]
   message: Message
   owners: Owner[]
+  support: { bodyHtml: string }
 }
 
 // Notion の接続キー（Vercel の環境変数 NOTION_TOKEN に入れます）
@@ -60,6 +61,7 @@ const IDS = {
   company: process.env.NOTION_COMPANY_DB || '206f3f1aca1c439295ec36476c3f61b0',
   owners: process.env.NOTION_OWNERS_DB || 'bd3b0f6380f5473d8a3c72e676ba3866',
   message: process.env.NOTION_MESSAGE_PAGE || '416213b94be481a299a4e2829e32ad6d',
+  support: process.env.NOTION_SUPPORT_PAGE || '41c213b94be481d9a33ddab72e6eb62d',
 }
 
 export const notionEnabled = TOKEN !== ''
@@ -286,6 +288,21 @@ export async function getMessage(): Promise<Message> {
   } catch (e) {
     console.error('代表メッセージの読み込みに失敗しました', e)
     return fallback.message
+  }
+}
+
+// ---- その他のご支援のかたち ----
+// Notion のページは「説明 / 区切り線 / 本文」の順に書きます（線より下がサイトに出ます）
+export async function getSupportHtml(): Promise<string> {
+  if (!notionEnabled) return fallback.support.bodyHtml
+  try {
+    const blocks = await listBlocks(IDS.support)
+    const line = blocks.findIndex((b) => b.type === 'divider')
+    const html = blocksToHtml(line >= 0 ? blocks.slice(line + 1) : blocks)
+    return html || fallback.support.bodyHtml
+  } catch (e) {
+    console.error('「その他のご支援のかたち」の読み込みに失敗しました', e)
+    return fallback.support.bodyHtml
   }
 }
 

@@ -510,6 +510,44 @@ p {
   border-left: 2px dotted var(--text);
   margin-bottom: 4px;
 }
+.gather-up {
+  margin: 6px 0 4px;
+}
+.gather-up .gather-dots {
+  margin: 4px 0 0;
+}
+.banner-support {
+  display: block;
+  margin-top: 0;
+  border-top: 6px solid var(--green);
+  text-align: center;
+  --tile-t: #1f8a66;
+}
+.banner-support .banner-body {
+  max-width: 820px;
+  margin: 0 auto;
+}
+.banner-support h3 {
+  margin-top: 6px;
+}
+.support-links {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 0 12px;
+}
+.support-links .btn {
+  margin: 8px 0 4px;
+  font-size: 14px;
+  padding: 9px 22px;
+}
+.btn-line {
+  border: 1px solid #ccc;
+  box-shadow: none;
+}
+.banner-support .ext-note {
+  margin: 6px 0 0;
+}
 .gather-arrow {
   font-size: 11px;
 }
@@ -949,8 +987,12 @@ p {
   .banner h3 {
     font-size: 22px;
   }
-  .banner-lllc {
+  .banner-lllc,
+  .banner-support {
     text-align: left;
+  }
+  .support-links {
+    justify-content: flex-start;
   }
   .grid3,
   .members,

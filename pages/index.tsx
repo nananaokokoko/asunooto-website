@@ -216,6 +216,40 @@ export default function Home({ members, news, history, company, message, ownersC
             </div>
           </article>
 
+          {/* 支えてくださる皆さまも、同じコミュニティへ */}
+          <p className="gather gather-up" aria-hidden="true">
+            <span className="gather-arrow">▲</span>
+            <span className="gather-text">共に学び合うコミュニティをつくってくださる皆さまと</span>
+            <span className="gather-dots" />
+          </p>
+          <article id="support" className="banner banner-support">
+            <div className="banner-body">
+              <p className="tile-target">
+                <span className="tile-en">for Supporters</span>
+                <span className="tile-ja">ご支援いただける皆さまへ</span>
+              </p>
+              <h3>共創オーナー制度</h3>
+              <p>
+                【仮】私たちは、理念に共感してくださる皆さまと共に会社を育てるために、配当をしない「非営利型株式会社」として運営をしています。株主の皆さまは「共創オーナー」として、さとのば大学をはじめ、学び合うコミュニティを共につくる仲間です。
+              </p>
+              <p className="support-links">
+                <Link href="/owners" className="btn btn-dark">
+                  共創オーナーの皆さまを見る
+                </Link>
+                <ExternalLink href="https://satonova.org/owners" className="btn btn-white btn-line">
+                  共創オーナーについて詳しく
+                </ExternalLink>
+                <ExternalLink href="https://greenz.jp/2024/11/19/satonova_2024/" className="btn btn-white btn-line">
+                  非営利型株式会社について（紹介記事）
+                </ExternalLink>
+                <Link href="/support" className="btn btn-white btn-line">
+                  その他のご支援のかたち
+                </Link>
+              </p>
+              <span className="ext-note">↗ のボタンは、さとのば大学・greenz.jp のWEBサイトが別のタブで開きます</span>
+            </div>
+          </article>
+
           <h3 className="sub">過去の事業</h3>
           <ul className="past">
             {PAST.map((p) => (
@@ -240,33 +274,6 @@ export default function Home({ members, news, history, company, message, ownersC
             ))}
             <p className="signature">{message.signature}</p>
           </div>
-          <Plane color="p" />
-        </section>
-
-        {/* ---------- ご支援いただける方へ ---------- */}
-        <section id="support" className="section">
-          <div className="heading c-pink">
-            <p className="en">SUPPORT</p>
-            <h2>ご支援いただける方へ</h2>
-          </div>
-          <p className="lead">
-            私たちは、理念に共感してくださる皆さまと共に会社を育てるために「非営利型株式会社」として運営をしています。
-          </p>
-          <p className="center">
-            <ExternalLink href="https://greenz.jp/2024/11/19/satonova_2024/" className="btn btn-white">
-              非営利型株式会社について（紹介記事）
-            </ExternalLink>
-            <span className="ext-note">greenz.jp の記事が別のタブで開きます</span>
-          </p>
-          <p className="lead">
-            株主の方は「オーナー」として、主にさとのば大学の様々な取り組みにご参加いただけます。
-          </p>
-          <p className="center">
-            <ExternalLink href="https://satonova.org/owners" className="btn btn-white">
-              詳しくはこちら
-            </ExternalLink>
-            <span className="ext-note">さとのば大学のWEBサイトが別のタブで開きます</span>
-          </p>
         </section>
       </main>
 
