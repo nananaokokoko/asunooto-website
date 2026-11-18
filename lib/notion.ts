@@ -111,7 +111,7 @@ function richToHtml(rich: any[]): string {
     .map((t: any) => {
       let s = esc(t.plain_text || '').replace(/\n/g, '<br>')
       if (t.annotations?.bold) s = `<strong>${s}</strong>`
-      if (t.href && /^https?:\/\//.test(t.href)) s = `<a href="${esc(t.href)}">${s}</a>`
+      if (t.href && /^https?:\/\//.test(t.href)) s = `<a target="_blank" rel="noopener noreferrer" href="${esc(t.href)}">${s}</a>`
       return s
     })
     .join('')

@@ -329,62 +329,189 @@ p {
 }
 
 /* ---------- 事業内容 ---------- */
-.satonova-logo {
-  display: block;
-  width: 190px;
-  margin: 0 auto 24px;
-}
-.satonova-logo img {
-  display: block;
-  border-radius: 50%;
-}
-.grid3 {
+.banner {
   display: grid;
-  grid-template-columns: repeat(3, 1fr);
-  gap: 24px;
-  margin-bottom: 24px;
-}
-.card {
+  grid-template-columns: 2fr 3fr;
   background: #fff;
   border-radius: 6px;
   overflow: hidden;
+  margin-top: 32px;
 }
-.card-img {
+.banner-img {
   display: block;
   width: 100%;
-  aspect-ratio: 4 / 3;
+  height: 100%;
+  min-height: 240px;
   object-fit: cover;
 }
-.card-blank {
-  opacity: 0.35;
+.banner-body {
+  padding: 28px 32px 24px;
+  font-size: 15px;
+  line-height: 1.9;
 }
-.bg-pink {
-  background: var(--pink);
+.banner-body > p {
+  margin-top: 10px;
 }
-.bg-blue {
-  background: var(--blue);
+.banner-title {
+  display: flex;
+  align-items: center;
+  gap: 16px;
 }
-.bg-orange {
-  background: var(--orange);
+.banner-logo {
+  flex: none;
+  width: 72px;
+  height: 72px;
+  border-radius: 50%;
 }
-.card-body {
-  padding: 16px 20px 20px;
+.banner-kicker {
+  font-size: 14px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  line-height: 1.6;
 }
-.card-body h4 {
-  font-size: 17px;
+.banner h3 {
+  font-size: 26px;
+  font-weight: 900;
+  line-height: 1.4;
+}
+.banner-paren {
+  font-size: 0.7em;
+  font-weight: 700;
+  white-space: nowrap;
+}
+.banner-satonova {
+  border-top: 6px solid var(--pink);
+}
+.banner-action {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px 14px;
+}
+.banner-action .btn {
+  margin: 8px 0;
+}
+.btn-pink {
+  background: var(--pink-t);
+  color: #fff;
+}
+.btn-pink:hover {
+  color: #fff;
+  opacity: 0.85;
+}
+.banner-lllc {
+  display: block;
+  margin-top: 0;
+  background: var(--ink);
+  color: #fff;
+  text-align: center;
+}
+.banner-lllc .banner-body {
+  max-width: 760px;
+  margin: 0 auto;
+  padding: 32px 32px 30px;
+}
+.banner-lllc .banner-kicker {
+  color: var(--green);
+}
+.banner-lllc .tag {
+  background: rgba(255, 255, 255, 0.16);
+  color: #fff;
+}
+.ext-icon {
+  display: inline-block;
+  margin-left: 6px;
+  font-size: 0.9em;
+}
+.ext-note {
+  display: block;
+  margin: -16px 0 24px;
+  font-size: 12px;
+}
+.banner-action .ext-note {
+  margin: 0;
+}
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.grid4 {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 16px;
+  margin-top: 16px;
+}
+.tile {
+  background: #fff;
+  border-radius: 6px;
+  border-top: 6px solid var(--tile);
+  padding: 18px 18px 20px;
+}
+.tile-blue {
+  --tile: var(--blue);
+  --tile-t: var(--blue-t);
+}
+.tile-orange {
+  --tile: var(--orange);
+  --tile-t: var(--orange-t);
+}
+.tile-pink {
+  --tile: var(--pink);
+  --tile-t: var(--pink-t);
+}
+.tile-green {
+  --tile: var(--green);
+  --tile-t: #1f8a66;
+}
+.tile-target {
+  line-height: 1.5;
+}
+.tile-en {
+  display: block;
+  color: var(--tile-t);
+  font-size: 19px;
+  font-weight: 900;
+  letter-spacing: 0.02em;
+}
+.tile-ja {
+  display: block;
+  font-size: 12px;
+  font-weight: 700;
+}
+.tile h4 {
+  margin-top: 12px;
+  padding-top: 12px;
+  border-top: 2px dotted #ccc;
+  font-size: 15px;
   font-weight: 700;
   line-height: 1.6;
 }
-.card-body p {
-  margin-top: 6px;
-  font-size: 14px;
+.tile ul {
+  margin: 8px 0 0;
+  padding-left: 1.2em;
+  font-size: 13px;
   line-height: 1.8;
 }
-.card-body .more {
-  display: inline-block;
-  margin-top: 8px;
+.gather {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin: 4px 0 6px;
   font-size: 14px;
   font-weight: 700;
+  line-height: 1.6;
+}
+.gather-dots {
+  height: 28px;
+  border-left: 2px dotted var(--text);
+  margin-bottom: 4px;
+}
+.gather-arrow {
+  font-size: 11px;
 }
 .tag {
   display: inline-block;
@@ -802,7 +929,29 @@ p {
 }
 
 /* ---------- スマホ・タブレット ---------- */
+@media (max-width: 900px) {
+  .grid4 {
+    grid-template-columns: repeat(2, 1fr);
+  }
+}
 @media (max-width: 800px) {
+  .banner {
+    grid-template-columns: 1fr;
+  }
+  .banner-img {
+    min-height: 0;
+    aspect-ratio: 16 / 9;
+  }
+  .banner-body,
+  .banner-lllc .banner-body {
+    padding: 22px 20px 20px;
+  }
+  .banner h3 {
+    font-size: 22px;
+  }
+  .banner-lllc {
+    text-align: left;
+  }
   .grid3,
   .members,
   .members-staff {
@@ -868,6 +1017,17 @@ p {
   }
   .lead {
     text-align: left;
+  }
+  .grid4 {
+    grid-template-columns: 1fr;
+  }
+  .banner-logo {
+    width: 56px;
+    height: 56px;
+  }
+  .banner-action .btn {
+    padding: 7px 20px;
+    font-size: 14px;
   }
   .about-card {
     padding: 36px 16px 44px;

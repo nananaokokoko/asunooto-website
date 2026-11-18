@@ -4,6 +4,7 @@ import type { GetStaticProps } from 'next'
 import Link from 'next/link'
 import Layout from '../components/Layout'
 import MemberCard from '../components/MemberCard'
+import ExternalLink from '../components/ExternalLink'
 import { formatDate } from '../lib/format'
 import {
   getMembers,
@@ -28,34 +29,41 @@ interface Props {
   ownersCount: number
 }
 
-// ---- ここから下の3つは、サイトに直接書いてある内容です ----
-const PILLARS = [
+// ---- ここから下は、サイトに直接書いてある内容です ----
+// 事業内容の4つのタイル（「for ○○」は対象、name は事業名）
+const TILES = [
   {
-    name: '旅する大学（4年制）',
-    text: '【仮】説明文を入れます。',
-    image: '/images/course01.jpg',
-    href: 'https://satonova.org/',
-    color: 'pink',
-  },
-  {
-    name: '地域おこし協力隊研修【仮・事業名称未定】',
-    text: '【仮】説明文を入れます。',
-    image: null,
-    href: null,
+    target: 'for School',
+    targetJa: '学校・教育機関の皆さまへ',
+    name: '【仮】学校向け 探究・地域留学プログラム',
+    items: ['高校向け探究支援', 'Learning Journey（地域留学体験プログラム）', '連携校との取り組み'],
+    preparing: false,
     color: 'blue',
   },
   {
-    name: 'Lifelong Learning Community',
-    text: '【仮】説明文を入れます。',
-    image: null,
-    href: null,
+    target: 'for Government',
+    targetJa: '自治体の皆さまへ',
+    name: '地域おこし協力隊研修【仮・事業名称未定】',
+    items: ['地域おこし協力隊向けの研修'],
+    preparing: true,
     color: 'orange',
   },
-]
-const RELATED = [
-  { name: '高校向け探究支援事業', image: '/images/project01.jpg' },
-  { name: '地域留学体験プログラム', image: '/images/project02.jpg' },
-  { name: '一般向け公開講義', image: '/images/project03.jpg' },
+  {
+    target: 'for Business',
+    targetJa: '企業の皆さまへ',
+    name: '【仮】企業向け研修・人材育成サポート',
+    items: ['企業向け研修', '人事・人材育成のサポート'],
+    preparing: true,
+    color: 'pink',
+  },
+  {
+    target: 'for Customer',
+    targetJa: '一般の皆さまへ',
+    name: '【仮】公開講座・旅のプログラム',
+    items: ['一般向け公開講座', '旅のプログラム'],
+    preparing: false,
+    color: 'green',
+  },
 ]
 const PAST = [
   { name: 'しごとバー神田\n企画・運営', image: '/images/member_shigotobar.jpg' },
@@ -135,57 +143,78 @@ export default function Home({ members, news, history, company, message, ownersC
             <p className="en">PROJECT</p>
             <h2>事業内容</h2>
           </div>
-          <a href="https://satonova.org/" className="satonova-logo">
-            <img src="/images/member_satonova.jpg" alt="さとのば大学" />
-          </a>
           <p className="lead">
-            日本全国４つの地域に１年ずつ暮らしながら、自分で立てたテーマに現地の人々と共に取り組む「プロジェクト学習」と、地域共創領域のトップランナーである講師陣や在校生と学び合う「オンライン学習」を行き来しながら学ぶ、新しいスタイルの市民大学です。
-          </p>
-          <p className="lead">
-            「自分らしく社会と関わり、仲間と共にほしい未来を自分たちの手で創る」ことができる“未来共創人材”
-            の育成を目指します。
+            【仮】ほしい未来を共につくるために、自ら学び、ときに学びほぐす。
+            <br />
+            アスノオトは、社会が変わっていくために必要な学びを、さまざまなかたちで届けています。
           </p>
 
-          <h3 className="sub">3つの柱</h3>
-          <div className="grid3">
-            {PILLARS.map((p) => (
-              <article key={p.name} className="card">
-                {p.image ? (
-                  <img src={p.image} alt="" className="card-img" loading="lazy" />
-                ) : (
-                  <div className={`card-img card-blank bg-${p.color}`} aria-hidden="true" />
-                )}
-                <div className="card-body">
-                  <h4 className={`c-${p.color}`}>{p.name}</h4>
-                  <p>{p.text}</p>
-                  {p.href ? (
-                    <a href={p.href} className="more">
-                      詳しくはこちら →
-                    </a>
-                  ) : (
-                    <span className="tag">準備中</span>
-                  )}
+          {/* さとのば大学（いちばん大きなバナー） */}
+          <article className="banner banner-satonova">
+            <img src="/images/course01.jpg" alt="" className="banner-img" loading="lazy" />
+            <div className="banner-body">
+              <div className="banner-title">
+                <img src="/images/member_satonova.jpg" alt="" className="banner-logo" />
+                <div>
+                  <p className="banner-kicker c-pink">さとのば大学</p>
+                  <h3>
+                    旅する大学<span className="banner-paren">（4年制市民大学）</span>
+                  </h3>
                 </div>
+              </div>
+              <p>
+                日本全国４つの地域に１年ずつ暮らしながら、自分で立てたテーマに現地の人々と共に取り組む「プロジェクト学習」と、地域共創領域のトップランナーである講師陣や在校生と学び合う「オンライン学習」を行き来しながら学ぶ、新しいスタイルの市民大学です。
+              </p>
+              <p>
+                「自分らしく社会と関わり、仲間と共にほしい未来を自分たちの手で創る」ことができる“未来共創人材”
+                の育成を目指します。
+              </p>
+              <p className="banner-action">
+                <ExternalLink href="https://satonova.org/" className="btn btn-pink">
+                  さとのば大学公式ホームページを見る
+                </ExternalLink>
+                <span className="ext-note">さとのば大学のWEBサイトが別のタブで開きます</span>
+              </p>
+            </div>
+          </article>
+
+          {/* 4つのタイル */}
+          <div className="grid4">
+            {TILES.map((t) => (
+              <article key={t.target} className={`tile tile-${t.color}`}>
+                <p className="tile-target">
+                  <span className="tile-en">{t.target}</span>
+                  <span className="tile-ja">{t.targetJa}</span>
+                </p>
+                <h4>{t.name}</h4>
+                <ul>
+                  {t.items.map((i) => (
+                    <li key={i}>{i}</li>
+                  ))}
+                </ul>
+                {t.preparing && <span className="tag">準備中</span>}
               </article>
             ))}
           </div>
 
-          <h3 className="sub">さとのば大学関連事業</h3>
-          <div className="grid3">
-            {RELATED.map((r) => (
-              <article key={r.name} className="card">
-                <img src={r.image} alt="" className="card-img" loading="lazy" />
-                <div className="card-body">
-                  <h4>{r.name}</h4>
-                </div>
-              </article>
-            ))}
-          </div>
-          <p className="center">
-            <a href="https://satonova.org/" className="btn btn-white">
-              さとのば大学公式ホームページはこちら →
-            </a>
+          {/* すべてが集まっていく場所 */}
+          <p className="gather" aria-hidden="true">
+            <span className="gather-dots" />
+            <span className="gather-text">すべての学びは、学び合うコミュニティへ</span>
+            <span className="gather-arrow">▼</span>
           </p>
+          <article className="banner banner-lllc">
+            <div className="banner-body">
+              <p className="banner-kicker">学び合うコミュニティ</p>
+              <h3>
+                Lifelong Learning Community<span className="banner-paren">（LLLC）</span>
+              </h3>
+              <p>
+                【仮】わたしたちが大切にしているのは、教える・教わるだけでなく「学び合う」こと。さとのば大学も、学校・自治体・企業・一般の皆さまに向けた学びも、すべてはこのコミュニティにつながっていきます。ほしい未来を共につくる仲間と、生涯にわたって学び合う場です。
+              </p>
+              <span className="tag">準備中</span>
+            </div>
+          </article>
 
           <h3 className="sub">過去の事業</h3>
           <ul className="past">
@@ -224,17 +253,19 @@ export default function Home({ members, news, history, company, message, ownersC
             私たちは、理念に共感してくださる皆さまと共に会社を育てるために「非営利型株式会社」として運営をしています。
           </p>
           <p className="center">
-            <a href="https://greenz.jp/2024/11/19/satonova_2024/" className="btn btn-white">
-              非営利型株式会社について（紹介記事） →
-            </a>
+            <ExternalLink href="https://greenz.jp/2024/11/19/satonova_2024/" className="btn btn-white">
+              非営利型株式会社について（紹介記事）
+            </ExternalLink>
+            <span className="ext-note">greenz.jp の記事が別のタブで開きます</span>
           </p>
           <p className="lead">
             株主の方は「オーナー」として、主にさとのば大学の様々な取り組みにご参加いただけます。
           </p>
           <p className="center">
-            <a href="https://satonova.org/owners" className="btn btn-white">
-              詳しくはこちら →
-            </a>
+            <ExternalLink href="https://satonova.org/owners" className="btn btn-white">
+              詳しくはこちら
+            </ExternalLink>
+            <span className="ext-note">さとのば大学のWEBサイトが別のタブで開きます</span>
           </p>
         </section>
       </main>

@@ -2,6 +2,7 @@ import React from 'react'
 import type { GetStaticProps } from 'next'
 import Link from 'next/link'
 import Layout from '../components/Layout'
+import ExternalLink from '../components/ExternalLink'
 import { getOwners, Owner } from '../lib/notion'
 
 export default function OwnersPage({ owners }: { owners: Owner[] }) {
@@ -21,9 +22,10 @@ export default function OwnersPage({ owners }: { owners: Owner[] }) {
               その株主の皆さまを、わたしたちは「共創オーナー」と呼んでいます。さとのば大学のビジョンに共感し、学びの場を共に創る仲間です。
             </p>
             <p className="center">
-              <a href="https://satonova.org/owners" className="btn btn-white">
-                共創オーナーについて詳しく（さとのば大学のサイトへ） →
-              </a>
+              <ExternalLink href="https://satonova.org/owners" className="btn btn-white">
+                共創オーナーについて詳しく（さとのば大学のサイトへ）
+              </ExternalLink>
+              <span className="ext-note">さとのば大学のWEBサイトが別のタブで開きます</span>
             </p>
           </div>
 

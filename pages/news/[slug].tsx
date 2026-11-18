@@ -5,6 +5,11 @@ import Layout from '../../components/Layout'
 import { formatDate } from '../../lib/format'
 import { getNewsList, getNewsArticle, NewsArticle } from '../../lib/notion'
 
+// お知らせ本文の中の外部リンクは、別のタブで開くようにします
+function openLinksInNewTab(html: string) {
+  return html.replace(/<a href="(https?:\/\/)/g, '<a target="_blank" rel="noopener noreferrer" href="$1')
+}
+
 export default function NewsPage({ article }: { article: NewsArticle }) {
   return (
     <Layout title={article.title}>
@@ -16,7 +21,7 @@ export default function NewsPage({ article }: { article: NewsArticle }) {
           <article className="article">
             <time dateTime={article.date}>{formatDate(article.date)}</time>
             <h1>{article.title}</h1>
-            <div className="article-body" dangerouslySetInnerHTML={{ __html: article.bodyHtml }} />
+            <div className="article-body" dangerouslySetInnerHTML={{ __html: openLinksInNewTab(article.bodyHtml) }} />
           </article>
           <p className="center">
             <Link href="/news" className="btn btn-dark">
