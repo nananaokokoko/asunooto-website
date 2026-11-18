@@ -467,6 +467,32 @@ p {
   --tile: var(--green);
   --tile-t: #1f8a66;
 }
+.lead-lines {
+  white-space: pre-line;
+}
+.grid4-3 {
+  grid-template-columns: repeat(3, 1fr);
+}
+.grid4-2 {
+  grid-template-columns: repeat(2, 1fr);
+}
+.grid4-1 {
+  grid-template-columns: 1fr;
+}
+.tile-text {
+  margin-top: 8px;
+  font-size: 13px;
+  line-height: 1.8;
+}
+.tile .more {
+  display: inline-block;
+  margin-top: 10px;
+  font-size: 13px;
+  font-weight: 700;
+}
+.tile .tag {
+  display: table;
+}
 .tile-target {
   line-height: 1.5;
 }
@@ -968,7 +994,8 @@ p {
 
 /* ---------- スマホ・タブレット ---------- */
 @media (max-width: 900px) {
-  .grid4 {
+  .grid4,
+  .grid4-3 {
     grid-template-columns: repeat(2, 1fr);
   }
 }
@@ -1060,7 +1087,9 @@ p {
   .lead {
     text-align: left;
   }
-  .grid4 {
+  .grid4,
+  .grid4-3,
+  .grid4-2 {
     grid-template-columns: 1fr;
   }
   .banner-logo {

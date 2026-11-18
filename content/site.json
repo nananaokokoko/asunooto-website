@@ -225,5 +225,115 @@
  "owners": [],
  "support": {
   "bodyHtml": "<p>【仮】アスノオトとさとのば大学を支えていただく方法を、こちらでご紹介していきます。ただいま準備中です。</p><h3>お問い合わせ</h3><p>ご支援についてのご相談は、info@asunooto.co.jp までお気軽にご連絡ください。</p>"
- }
+ },
+ "project": [
+  {
+   "place": "はじめの文",
+   "heading": "事業内容のはじめの文",
+   "sub": "",
+   "name": "",
+   "text": "【仮】ほしい未来を共につくるために、自ら学び、ときに学びほぐす。\nアスノオトは、社会が変わっていくために必要な学びを、さまざまなかたちで届けています。",
+   "items": [],
+   "href": null,
+   "linkLabel": "",
+   "preparing": false,
+   "order": 1
+  },
+  {
+   "place": "さとのば大学",
+   "heading": "旅する大学（4年制市民大学）",
+   "sub": "さとのば大学",
+   "name": "",
+   "text": "日本全国４つの地域に１年ずつ暮らしながら、自分で立てたテーマに現地の人々と共に取り組む「プロジェクト学習」と、地域共創領域のトップランナーである講師陣や在校生と学び合う「オンライン学習」を行き来しながら学ぶ、新しいスタイルの市民大学です。\n「自分らしく社会と関わり、仲間と共にほしい未来を自分たちの手で創る」ことができる“未来共創人材”の育成を目指します。",
+   "items": [],
+   "href": "https://satonova.org/",
+   "linkLabel": "さとのば大学公式ホームページを見る",
+   "preparing": false,
+   "order": 2
+  },
+  {
+   "place": "タイル",
+   "heading": "for School",
+   "sub": "学校・教育機関の皆さまへ",
+   "name": "【仮】学校向け 探究・地域留学プログラム",
+   "text": "",
+   "items": [
+    "高校向け探究支援",
+    "Learning Journey（地域留学体験プログラム）",
+    "連携校との取り組み"
+   ],
+   "href": null,
+   "linkLabel": "",
+   "preparing": false,
+   "order": 3
+  },
+  {
+   "place": "タイル",
+   "heading": "for Government",
+   "sub": "自治体の皆さまへ",
+   "name": "地域おこし協力隊研修【仮・事業名称未定】",
+   "text": "",
+   "items": [
+    "地域おこし協力隊向けの研修"
+   ],
+   "href": null,
+   "linkLabel": "",
+   "preparing": true,
+   "order": 4
+  },
+  {
+   "place": "タイル",
+   "heading": "for Business",
+   "sub": "企業の皆さまへ",
+   "name": "【仮】企業向け研修・人材育成サポート",
+   "text": "",
+   "items": [
+    "企業向け研修",
+    "人事・人材育成のサポート"
+   ],
+   "href": null,
+   "linkLabel": "",
+   "preparing": true,
+   "order": 5
+  },
+  {
+   "place": "タイル",
+   "heading": "for Customer",
+   "sub": "一般の皆さまへ",
+   "name": "【仮】公開講座・旅のプログラム",
+   "text": "",
+   "items": [
+    "一般向け公開講座",
+    "旅のプログラム"
+   ],
+   "href": null,
+   "linkLabel": "",
+   "preparing": false,
+   "order": 6
+  },
+  {
+   "place": "LLLC",
+   "heading": "Lifelong Learning Community（LLLC）",
+   "sub": "学び合うコミュニティ",
+   "name": "",
+   "text": "【仮】わたしたちが大切にしているのは、教える・教わるだけでなく「学び合う」こと。さとのば大学も、学校・自治体・企業・一般の皆さまに向けた学びも、すべてはこのコミュニティにつながっていきます。ほしい未来を共につくる仲間と、生涯にわたって学び合う場です。",
+   "items": [],
+   "href": null,
+   "linkLabel": "",
+   "preparing": true,
+   "order": 7
+  },
+  {
+   "place": "サポーター",
+   "heading": "for Supporters",
+   "sub": "ご支援いただける皆さまへ",
+   "name": "共創オーナー制度",
+   "text": "【仮】私たちは、理念に共感してくださる皆さまと共に会社を育てるために、配当をしない「非営利型株式会社」として運営をしています。株主の皆さまは「共創オーナー」として、さとのば大学をはじめ、学び合うコミュニティを共につくる仲間です。",
+   "items": [],
+   "href": "https://satonova.org/owners",
+   "linkLabel": "共創オーナーについて詳しく",
+   "preparing": false,
+   "order": 8
+  }
+ ]
 }

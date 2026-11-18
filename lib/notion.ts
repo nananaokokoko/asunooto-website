@@ -35,6 +35,19 @@ export interface Message {
   body: string[]
   signature: string
 }
+// 事業内容の1つの枠
+export interface ProjectBlock {
+  place: string // はじめの文 / さとのば大学 / タイル / LLLC / サポーター
+  heading: string
+  sub: string
+  name: string
+  text: string
+  items: string[]
+  href: string | null
+  linkLabel: string
+  preparing: boolean
+  order: number
+}
 export interface Owner {
   name: string
   title: string
@@ -48,6 +61,7 @@ const fallback = fallbackJson as unknown as {
   message: Message
   owners: Owner[]
   support: { bodyHtml: string }
+  project: ProjectBlock[]
 }
 
 // Notion の接続キー（Vercel の環境変数 NOTION_TOKEN に入れます）
@@ -61,6 +75,7 @@ const IDS = {
   company: process.env.NOTION_COMPANY_DB || '206f3f1aca1c439295ec36476c3f61b0',
   owners: process.env.NOTION_OWNERS_DB || 'bd3b0f6380f5473d8a3c72e676ba3866',
   message: process.env.NOTION_MESSAGE_PAGE || '416213b94be481a299a4e2829e32ad6d',
+  project: process.env.NOTION_PROJECT_DB || '41c213b94be48119aa50cc35765b9d41',
   support: process.env.NOTION_SUPPORT_PAGE || '41c213b94be481d9a33ddab72e6eb62d',
 }
 
@@ -288,6 +303,45 @@ export async function getMessage(): Promise<Message> {
   } catch (e) {
     console.error('代表メッセージの読み込みに失敗しました', e)
     return fallback.message
+  }
+}
+
+// ---- 事業内容 ----
+// Notion の「事業内容」の表を読みます。ある「場所」の行が1つもないときは、控えの内容で補います
+export async function getProject(): Promise<ProjectBlock[]> {
+  if (!notionEnabled) return fallback.project
+  try {
+    const rows = await queryPublished(IDS.project)
+    const list = rows
+      .map((page: any): ProjectBlock => {
+        const p = page.properties
+        const href = (p['リンク先']?.url || '').trim()
+        return {
+          place: p['場所']?.select?.name || '',
+          heading: plain(p['見出し']),
+          sub: plain(p['小見出し']),
+          name: plain(p['事業名']),
+          text: plain(p['説明文']),
+          items: plain(p['項目'])
+            .split('\n')
+            .map((t) => t.trim())
+            .filter(Boolean),
+          href: /^(https?:\/\/|\/)/.test(href) ? href : null,
+          linkLabel: plain(p['リンクの文字']),
+          preparing: p['準備中']?.checkbox === true,
+          order: num(p['並び順']) ?? 999,
+        }
+      })
+      .filter((b) => b.place && b.heading)
+    const places = ['はじめの文', 'さとのば大学', 'タイル', 'LLLC', 'サポーター']
+    const merged = places.flatMap((place) => {
+      const fromNotion = list.filter((b) => b.place === place)
+      return fromNotion.length > 0 ? fromNotion : fallback.project.filter((b) => b.place === place)
+    })
+    return merged.sort((a, b) => a.order - b.order)
+  } catch (e) {
+    console.error('事業内容の読み込みに失敗しました', e)
+    return fallback.project
   }
 }
 

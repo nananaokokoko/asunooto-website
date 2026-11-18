@@ -13,6 +13,8 @@ import {
   getCompany,
   getMessage,
   getOwners,
+  getProject,
+  ProjectBlock,
   Member,
   NewsItem,
   HistoryItem,
@@ -27,44 +29,52 @@ interface Props {
   company: CompanyRow[]
   message: Message
   ownersCount: number
+  project: ProjectBlock[]
+}
+
+// ---- 事業内容の枠（文章とリンク先は Notion の「事業内容」の表で編集します）----
+const TILE_COLORS = ['blue', 'orange', 'pink', 'green']
+
+// 「旅する大学（4年制市民大学）」の（ ）の部分を少し小さく表示します
+function Heading({ text }: { text: string }) {
+  const m = text.match(/^(.*?)(（[^）]*）)$/)
+  if (!m) return <>{text}</>
+  return (
+    <>
+      {m[1]}
+      <span className="banner-paren">{m[2]}</span>
+    </>
+  )
+}
+// 文章を改行ごとに段落にします
+function Paragraphs({ text }: { text: string }) {
+  return (
+    <>
+      {text
+        .split('\n')
+        .filter((t) => t.trim())
+        .map((t, i) => (
+          <p key={i}>{t}</p>
+        ))}
+    </>
+  )
+}
+// Notion に入れたリンク。外部サイトは別のタブで開きます
+function BlockLink({ block, className, fallbackLabel }: { block: ProjectBlock; className: string; fallbackLabel: string }) {
+  if (!block.href) return null
+  const label = block.linkLabel || fallbackLabel
+  return block.href.startsWith('/') ? (
+    <Link href={block.href} className={className}>
+      {label}
+    </Link>
+  ) : (
+    <ExternalLink href={block.href} className={className}>
+      {label}
+    </ExternalLink>
+  )
 }
 
 // ---- ここから下は、サイトに直接書いてある内容です ----
-// 事業内容の4つのタイル（「for ○○」は対象、name は事業名）
-const TILES = [
-  {
-    target: 'for School',
-    targetJa: '学校・教育機関の皆さまへ',
-    name: '【仮】学校向け 探究・地域留学プログラム',
-    items: ['高校向け探究支援', 'Learning Journey（地域留学体験プログラム）', '連携校との取り組み'],
-    preparing: false,
-    color: 'blue',
-  },
-  {
-    target: 'for Government',
-    targetJa: '自治体の皆さまへ',
-    name: '地域おこし協力隊研修【仮・事業名称未定】',
-    items: ['地域おこし協力隊向けの研修'],
-    preparing: true,
-    color: 'orange',
-  },
-  {
-    target: 'for Business',
-    targetJa: '企業の皆さまへ',
-    name: '【仮】企業向け研修・人材育成サポート',
-    items: ['企業向け研修', '人事・人材育成のサポート'],
-    preparing: true,
-    color: 'pink',
-  },
-  {
-    target: 'for Customer',
-    targetJa: '一般の皆さまへ',
-    name: '【仮】公開講座・旅のプログラム',
-    items: ['一般向け公開講座', '旅のプログラム'],
-    preparing: false,
-    color: 'green',
-  },
-]
 const PAST = [
   { name: 'しごとバー神田\n企画・運営', image: '/images/member_shigotobar.jpg' },
   { name: '地域共創カレッジ\n運営', image: '/images/member_colledge.jpg' },
@@ -83,7 +93,12 @@ function Plane({ color }: { color: 'b' | 'o' | 'p' }) {
   )
 }
 
-export default function Home({ members, news, history, company, message, ownersCount }: Props) {
+export default function Home({ members, news, history, company, message, ownersCount, project }: Props) {
+  const lead = project.find((b) => b.place === 'はじめの文')
+  const satonova = project.find((b) => b.place === 'さとのば大学')
+  const tiles = project.filter((b) => b.place === 'タイル')
+  const lllc = project.find((b) => b.place === 'LLLC')
+  const supporters = project.find((b) => b.place === 'サポーター')
   const officers = members.filter((m) => m.group === '役員')
   const staff = members.filter((m) => m.group !== '役員')
   return (
@@ -143,112 +158,124 @@ export default function Home({ members, news, history, company, message, ownersC
             <p className="en">PROJECT</p>
             <h2>事業内容</h2>
           </div>
-          <p className="lead">
-            【仮】ほしい未来を共につくるために、自ら学び、ときに学びほぐす。
-            <br />
-            アスノオトは、社会が変わっていくために必要な学びを、さまざまなかたちで届けています。
-          </p>
+          {lead && (
+            <p className="lead lead-lines">{lead.text}</p>
+          )}
 
           {/* さとのば大学（いちばん大きなバナー） */}
-          <article className="banner banner-satonova">
-            <img src="/images/course01.jpg" alt="" className="banner-img" loading="lazy" />
-            <div className="banner-body">
-              <div className="banner-title">
-                <img src="/images/member_satonova.jpg" alt="" className="banner-logo" />
-                <div>
-                  <p className="banner-kicker c-pink">さとのば大学</p>
-                  <h3>
-                    旅する大学<span className="banner-paren">（4年制市民大学）</span>
-                  </h3>
+          {satonova && (
+            <article className="banner banner-satonova">
+              <img src="/images/course01.jpg" alt="" className="banner-img" loading="lazy" />
+              <div className="banner-body">
+                <div className="banner-title">
+                  <img src="/images/member_satonova.jpg" alt="" className="banner-logo" />
+                  <div>
+                    <p className="banner-kicker c-pink">{satonova.sub}</p>
+                    <h3>
+                      <Heading text={satonova.heading} />
+                    </h3>
+                  </div>
                 </div>
+                <Paragraphs text={satonova.text} />
+                {satonova.href && (
+                  <p className="banner-action">
+                    <BlockLink block={satonova} className="btn btn-pink" fallbackLabel="詳しくはこちら" />
+                    {!satonova.href.startsWith('/') && (
+                      <span className="ext-note">さとのば大学のWEBサイトが別のタブで開きます</span>
+                    )}
+                  </p>
+                )}
+                {satonova.preparing && <span className="tag">準備中</span>}
               </div>
-              <p>
-                日本全国４つの地域に１年ずつ暮らしながら、自分で立てたテーマに現地の人々と共に取り組む「プロジェクト学習」と、地域共創領域のトップランナーである講師陣や在校生と学び合う「オンライン学習」を行き来しながら学ぶ、新しいスタイルの市民大学です。
-              </p>
-              <p>
-                「自分らしく社会と関わり、仲間と共にほしい未来を自分たちの手で創る」ことができる“未来共創人材”
-                の育成を目指します。
-              </p>
-              <p className="banner-action">
-                <ExternalLink href="https://satonova.org/" className="btn btn-pink">
-                  さとのば大学公式ホームページを見る
-                </ExternalLink>
-                <span className="ext-note">さとのば大学のWEBサイトが別のタブで開きます</span>
-              </p>
-            </div>
-          </article>
+            </article>
+          )}
 
-          {/* 4つのタイル */}
-          <div className="grid4">
-            {TILES.map((t) => (
-              <article key={t.target} className={`tile tile-${t.color}`}>
+          {/* タイル */}
+          <div className={`grid4 grid4-${Math.min(tiles.length, 4)}`}>
+            {tiles.map((t, i) => (
+              <article key={t.heading} className={`tile tile-${TILE_COLORS[i % TILE_COLORS.length]}`}>
                 <p className="tile-target">
-                  <span className="tile-en">{t.target}</span>
-                  <span className="tile-ja">{t.targetJa}</span>
+                  <span className="tile-en">{t.heading}</span>
+                  <span className="tile-ja">{t.sub}</span>
                 </p>
-                <h4>{t.name}</h4>
-                <ul>
-                  {t.items.map((i) => (
-                    <li key={i}>{i}</li>
-                  ))}
-                </ul>
+                {t.name && <h4>{t.name}</h4>}
+                {t.text && (
+                  <div className="tile-text">
+                    <Paragraphs text={t.text} />
+                  </div>
+                )}
+                {t.items.length > 0 && (
+                  <ul>
+                    {t.items.map((item) => (
+                      <li key={item}>{item}</li>
+                    ))}
+                  </ul>
+                )}
+                <BlockLink block={t} className="more" fallbackLabel="詳しくはこちら" />
                 {t.preparing && <span className="tag">準備中</span>}
               </article>
             ))}
           </div>
 
           {/* すべてが集まっていく場所 */}
-          <p className="gather" aria-hidden="true">
-            <span className="gather-dots" />
-            <span className="gather-text">すべての学びは、学び合うコミュニティへ</span>
-            <span className="gather-arrow">▼</span>
-          </p>
-          <article className="banner banner-lllc">
-            <div className="banner-body">
-              <p className="banner-kicker">学び合うコミュニティ</p>
-              <h3>
-                Lifelong Learning Community<span className="banner-paren">（LLLC）</span>
-              </h3>
-              <p>
-                【仮】わたしたちが大切にしているのは、教える・教わるだけでなく「学び合う」こと。さとのば大学も、学校・自治体・企業・一般の皆さまに向けた学びも、すべてはこのコミュニティにつながっていきます。ほしい未来を共につくる仲間と、生涯にわたって学び合う場です。
+          {lllc && (
+            <>
+              <p className="gather" aria-hidden="true">
+                <span className="gather-dots" />
+                <span className="gather-text">すべての学びは、学び合うコミュニティへ</span>
+                <span className="gather-arrow">▼</span>
               </p>
-              <span className="tag">準備中</span>
-            </div>
-          </article>
+              <article className="banner banner-lllc">
+                <div className="banner-body">
+                  <p className="banner-kicker">{lllc.sub}</p>
+                  <h3>
+                    <Heading text={lllc.heading} />
+                  </h3>
+                  <Paragraphs text={lllc.text} />
+                  {lllc.href && (
+                    <p>
+                      <BlockLink block={lllc} className="btn btn-white" fallbackLabel="詳しくはこちら" />
+                    </p>
+                  )}
+                  {lllc.preparing && <span className="tag">準備中</span>}
+                </div>
+              </article>
+            </>
+          )}
 
           {/* 支えてくださる皆さまも、同じコミュニティへ */}
-          <p className="gather gather-up" aria-hidden="true">
-            <span className="gather-arrow">▲</span>
-            <span className="gather-text">共に学び合うコミュニティをつくってくださる皆さまと</span>
-            <span className="gather-dots" />
-          </p>
-          <article id="support" className="banner banner-support">
-            <div className="banner-body">
-              <p className="tile-target">
-                <span className="tile-en">for Supporters</span>
-                <span className="tile-ja">ご支援いただける皆さまへ</span>
+          {supporters && (
+            <>
+              <p className="gather gather-up" aria-hidden="true">
+                <span className="gather-arrow">▲</span>
+                <span className="gather-text">共に学び合うコミュニティをつくってくださる皆さまと</span>
+                <span className="gather-dots" />
               </p>
-              <h3>共創オーナー制度</h3>
-              <p>
-                【仮】私たちは、理念に共感してくださる皆さまと共に会社を育てるために、配当をしない「非営利型株式会社」として運営をしています。株主の皆さまは「共創オーナー」として、さとのば大学をはじめ、学び合うコミュニティを共につくる仲間です。
-              </p>
-              <p className="support-links">
-                <Link href="/owners" className="btn btn-dark">
-                  共創オーナーの皆さまを見る
-                </Link>
-                <ExternalLink href="https://satonova.org/owners" className="btn btn-white btn-line">
-                  共創オーナーについて詳しく
-                </ExternalLink>
-                <ExternalLink href="https://greenz.jp/2024/11/19/satonova_2024/" className="btn btn-white btn-line">
-                  非営利型株式会社について（紹介記事）
-                </ExternalLink>
-                <Link href="/support" className="btn btn-white btn-line">
-                  その他のご支援のかたち
-                </Link>
-              </p>
-              <span className="ext-note">↗ のボタンは、さとのば大学・greenz.jp のWEBサイトが別のタブで開きます</span>
-            </div>
-          </article>
+              <article id="support" className="banner banner-support">
+                <div className="banner-body">
+                  <p className="tile-target">
+                    <span className="tile-en">{supporters.heading}</span>
+                    <span className="tile-ja">{supporters.sub}</span>
+                  </p>
+                  {supporters.name && <h3>{supporters.name}</h3>}
+                  <Paragraphs text={supporters.text} />
+                  <p className="support-links">
+                    <Link href="/owners" className="btn btn-dark">
+                      共創オーナーの皆さまを見る
+                    </Link>
+                    <BlockLink block={supporters} className="btn btn-white btn-line" fallbackLabel="詳しくはこちら" />
+                    <ExternalLink href="https://greenz.jp/2024/11/19/satonova_2024/" className="btn btn-white btn-line">
+                      非営利型株式会社について（紹介記事）
+                    </ExternalLink>
+                    <Link href="/support" className="btn btn-white btn-line">
+                      その他のご支援のかたち
+                    </Link>
+                  </p>
+                  <span className="ext-note">↗ のボタンは、さとのば大学・greenz.jp のWEBサイトが別のタブで開きます</span>
+                </div>
+              </article>
+            </>
+          )}
 
           <h3 className="sub">過去の事業</h3>
           <ul className="past">
@@ -386,16 +413,17 @@ export default function Home({ members, news, history, company, message, ownersC
 }
 
 export const getStaticProps: GetStaticProps<Props> = async () => {
-  const [members, news, history, company, message, owners] = await Promise.all([
+  const [members, news, history, company, message, owners, project] = await Promise.all([
     getMembers(),
     getNewsList(),
     getHistory(),
     getCompany(),
     getMessage(),
     getOwners(),
+    getProject(),
   ])
   return {
-    props: { members, news, history, company, message, ownersCount: owners.length },
+    props: { members, news, history, company, message, ownersCount: owners.length, project },
     // Notion を直すと、約1分後から新しい内容が表示されます
     revalidate: 60,
   }
