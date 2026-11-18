@@ -1,7 +1,7 @@
 import React from 'react'
 import type { GetStaticProps } from 'next'
-import Link from 'next/link'
 import Layout from '../components/Layout'
+import BackToTop from '../components/BackToTop'
 import ExternalLink from '../components/ExternalLink'
 import { getOwners, Owner } from '../lib/notion'
 
@@ -46,9 +46,7 @@ export default function OwnersPage({ owners }: { owners: Owner[] }) {
             <p className="center owners-note">【仮】ただいま掲載の準備を進めています。</p>
           )}
           <p className="center">
-            <Link href="/" className="btn btn-dark">
-              トップページへ戻る
-            </Link>
+            <BackToTop />
           </p>
         </section>
       </div>

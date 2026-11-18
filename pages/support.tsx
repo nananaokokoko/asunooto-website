@@ -1,7 +1,7 @@
 import React from 'react'
 import type { GetStaticProps } from 'next'
-import Link from 'next/link'
 import Layout from '../components/Layout'
+import BackToTop from '../components/BackToTop'
 import { getSupportHtml } from '../lib/notion'
 
 // 本文は Notion の「その他のご支援のかたち」ページで編集します
@@ -18,9 +18,7 @@ export default function SupportPage({ bodyHtml }: { bodyHtml: string }) {
             <div className="article-body" dangerouslySetInnerHTML={{ __html: bodyHtml }} />
           </article>
           <p className="center">
-            <Link href="/#support" className="btn btn-dark">
-              トップページへ戻る
-            </Link>
+            <BackToTop fallback="/#support" />
           </p>
         </section>
       </div>

@@ -2,6 +2,7 @@ import React from 'react'
 import type { GetStaticProps } from 'next'
 import Link from 'next/link'
 import Layout from '../../components/Layout'
+import BackToTop from '../../components/BackToTop'
 import { formatDate } from '../../lib/format'
 import { getNewsList, NewsItem } from '../../lib/notion'
 
@@ -25,9 +26,7 @@ export default function NewsIndex({ news }: { news: NewsItem[] }) {
             ))}
           </ul>
           <p className="center">
-            <Link href="/" className="btn btn-dark">
-              トップページへ戻る
-            </Link>
+            <BackToTop />
           </p>
         </section>
       </div>

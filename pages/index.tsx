@@ -261,7 +261,7 @@ export default function Home({ members, news, history, company, message, ownersC
                   <Paragraphs text={supporters.text} />
                   <p className="support-links">
                     <Link href="/owners" className="btn btn-dark">
-                      共創オーナーの皆さまを見る
+                      {ownersCount > 0 ? `共創オーナーの皆さま（${ownersCount}名）を見る` : '共創オーナーの皆さまを見る'}
                     </Link>
                     <BlockLink block={supporters} className="btn btn-white btn-line" fallbackLabel="詳しくはこちら" />
                     <ExternalLink href="https://greenz.jp/2024/11/19/satonova_2024/" className="btn btn-white btn-line">
@@ -349,24 +349,6 @@ export default function Home({ members, news, history, company, message, ownersC
             {staff.map((m) => (
               <MemberCard key={m.id} member={m} small />
             ))}
-          </div>
-        </section>
-
-        <section id="owners" className="section">
-          <div className="heading-g">
-            <h2>共創オーナー</h2>
-            <p className="en">OWNERS</p>
-          </div>
-          <div className="owners-teaser">
-            <p>
-              【仮】アスノオトは、配当をしない「非営利型株式会社」です。株主の皆さまを、わたしたちは「共創オーナー」と呼んでいます。
-              未来を共に創る仲間として、たくさんの方々がアスノオトとさとのば大学を支えてくださっています。
-            </p>
-            <p className="center">
-              <Link href="/owners" className="btn btn-dark">
-                {ownersCount > 0 ? `共創オーナーの皆さま（${ownersCount}名）を見る` : '共創オーナーについて'}
-              </Link>
-            </p>
           </div>
         </section>
 
